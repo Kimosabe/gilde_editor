@@ -1,11 +1,15 @@
 typedef unsigned char   undefined;
 
+/*
 typedef pointer32 ImageBaseOffset32;
 
 typedef unsigned char    bool;
+*/
 typedef unsigned char    byte;
 typedef unsigned int    dword;
+/*
 float10
+*/
 typedef long long    longlong;
 typedef unsigned char    uchar;
 typedef unsigned int    uint;
@@ -19,7 +23,9 @@ typedef unsigned long long    undefined5;
 typedef unsigned long long    undefined6;
 typedef unsigned long long    undefined8;
 typedef unsigned short    ushort;
+/*
 typedef short    wchar_t;
+*/
 typedef unsigned short    word;
 typedef struct __LinkedListTime __LinkedListTime, *P__LinkedListTime;
 
@@ -2955,9 +2961,11 @@ struct ObjectPrototype_65 {
 
 typedef struct OpenedFileMaybe OpenedFileMaybe, *POpenedFileMaybe;
 
+/*
 typedef struct _iobuf _iobuf, *P_iobuf;
 
 typedef struct _iobuf FILE;
+*/
 
 struct OpenedFileMaybe {
     undefined field0_0x0;
@@ -3267,6 +3275,7 @@ struct OpenedFileMaybe {
     undefined field304_0x13f;
 };
 
+/*
 struct _iobuf {
     char * _ptr;
     int _cnt;
@@ -3277,6 +3286,7 @@ struct _iobuf {
     int _bufsiz;
     char * _tmpfname;
 };
+*/
 
 typedef struct SampleMaybe SampleMaybe, *PSampleMaybe;
 
