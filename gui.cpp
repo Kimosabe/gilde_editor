@@ -521,8 +521,6 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
             ImGui::InputByte("Time byte #1", &node->time_1, 1);
             ImGui::InputByte("Time byte #2", &node->time_2, 1);
         }
-        ImGui::Text("Unknown 4 bytes: %X", node->field14_0x1e);
-        ImGui::Text("Unknown byte: %i", (int)node->field15_0x22);
     }
 
     if (node->content) {
@@ -619,7 +617,7 @@ void ViewBuildingInstance::DrawNode(NodesViewer *viewer) {
     if (show_mem_edit) {
         mem_edit.DrawContents(data, data_size);
     } else {
-        ImGui::Text("Object Prototype: %i", (int)node->object_prot_index);
+        ImGui::Text("Current Room Prototype: %i", (int)node->current_room_prot_index);
         ImGui::Text("Character ID: %i", node->character_object_id);
 
         /*
