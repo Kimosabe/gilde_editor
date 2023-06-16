@@ -192,6 +192,7 @@ static ObjectPrototype_65** g_objects_prototypes = (ObjectPrototype_65**)0x099EC
 static Character* g_characters = (Character*)0x7f4ca0;
 static BuildingInstance **g_market_ptr = (BuildingInstance**)0x0773D78;
 static BuildingInstance** g_current_building_ptr = (BuildingInstance**)0x0774718;
+static BuildingInstance** g_current_building_ptr_2 = (BuildingInstance**)0x07746c8;
 static LinkedList** g_current_room_ptr = (LinkedList**)0x07746cc;
 
 
@@ -296,7 +297,8 @@ struct ViewInit : ViewBase {
     ViewInit(NodesViewer *viewer, void* d) : ViewBase(viewer, d, 0) {
         id = viewer->widget_id--;
         connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Market" });
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Building" });
+        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Building #1" });
+        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Building #2" });
         connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Room" });
         connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Player" });
     }
@@ -306,8 +308,9 @@ struct ViewInit : ViewBase {
     void DrawNode(NodesViewer *viewer) {
         connections[0].DrawSocket(viewer, *g_market_ptr);
         connections[1].DrawSocket(viewer, *g_current_building_ptr);
-        connections[2].DrawSocket(viewer, *g_current_room_ptr);
-        connections[3].DrawSocket(viewer, g_characters + 1);
+        connections[2].DrawSocket(viewer, *g_current_building_ptr_2);
+        connections[3].DrawSocket(viewer, *g_current_room_ptr);
+        connections[4].DrawSocket(viewer, g_characters + 1);
     }
 };
 
