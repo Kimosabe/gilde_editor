@@ -176,6 +176,17 @@ bool SliderByte(const char* label, unsigned char* v, int v_min, int v_max, const
 typedef LinkedList *(*__FindFreeLinkedListNode)();
 __FindFreeLinkedListNode FindFreeLinkedListNode = (__FindFreeLinkedListNode)0x0502e00;
 
+typedef ProductionInfo *(*FN_get_production_info_005b1aa0)(BuildingInstance *);
+FN_get_production_info_005b1aa0 GetProductionInfo = (FN_get_production_info_005b1aa0)0x05b1aa0;
+
+// Returns: 0 - nothing found, 1 - building found, 2 - linked list found, 3 - character found
+typedef int (*FN_find_by_object_id_005015e0)(BuildingInstance **param_1,LinkedList **param_2,Character **param_3,int object_id);
+FN_find_by_object_id_005015e0 FindById = (FN_find_by_object_id_005015e0)0x05015e0;
+
+
+//----------------------------------------------------------------------------
+
+
 static int *g_objects_count = (int*)0x0699364;
 static ObjectPrototype_65** g_objects_prototypes = (ObjectPrototype_65**)0x099EC10;
 static Character* g_characters = (Character*)0x7f4ca0;
