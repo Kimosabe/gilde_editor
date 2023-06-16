@@ -564,9 +564,12 @@ void ViewCharacter::DrawNode(NodesViewer *viewer) {
         //ImGui::DebugTextEncoding(character->first_name);
 
         ImGui::Text("Index: %i", character->index);
+        ImGui::SliderInt("Action Points", &character->action_points, 1, 50);
         ImGui::Text("Object ID: %i", character->object_id);
         ImGui::Text("Another object ID: %i", character->another_object_id);
-        ImGui::Text("Master budget: %i", character->master_budget / 32);
+        if (character->playermode == 1) {
+            ImGui::Text("Master budget: %i", character->master_budget / 32);
+        }
         /*
         ImGui::Text("Maybe flags #1: %X", character->flags_maybe);
         ImGui::Text("Maybe flags #2: %X", character->maybe_flags);
