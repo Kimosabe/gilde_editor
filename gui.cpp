@@ -590,6 +590,11 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
             ImGui::InputInt("Count", &node->count, 1);
         }
 
+        if (prototype->type == 36) {
+            ImGui::Text("Action active: %i", (int)node->action_in_progress_flag);
+            ImGui::Text("Character ID for action: %i", node->character_id_for_action);
+        }
+
         ImGui::Text("Object ID: %i", node->this_object_id);
         ImGui::Text("Container ID: %i", node->container_object_id);
         ImGui::Text("Owner ID: %i", node->owner_object_id);
@@ -732,11 +737,11 @@ ViewSomethingAboutBuilding::ViewSomethingAboutBuilding(NodesViewer *viewer, Some
     SAB_CONNECTION(&d->ptr_3, "Ptr #5");
     SAB_CONNECTION(&d->ptr_4, "Ptr #6");
     if (*d->name == 'o') {
-        LINKED_LIST_CONNECTION(&d->building_ptr, "object");
+        LINKED_LIST_CONNECTION(&d->instance_of_any_type_ptr, "object");
     } else if (*d->name == 'g') {
-        BUILDING_INSTANCE_CONNECTION(&d->building_ptr, "building");
+        BUILDING_INSTANCE_CONNECTION(&d->instance_of_any_type_ptr, "building");
     } else /*== 's'*/ {
-        CHARACTER_CONNECTION(&d->building_ptr, "character");
+        CHARACTER_CONNECTION(&d->instance_of_any_type_ptr, "character");
     }
     SAB_CONNECTION(&d->yet_another_ptr, "Ptr #7");
 }
@@ -751,21 +756,17 @@ void ViewSomethingAboutBuilding::DrawNode(NodesViewer *viewer) {
     } else {
         ImGui::Text("Animation Ptr: %X", ptr->animation);
         ImGui::Text("LightInfo Ptr: %X", ptr->light_info);
-        ImGui::Text("Function Ptr: %X", ptr->func);
+        ImGui::Text("Draw Data Ptr: %X", ptr->draw_data);
         ImGui::Text("Maybe flags: %X", ptr->some_flags);
 
         ImGui::PushItemWidth(220);
-        ImGui::InputFloat3("Position", &ptr->field13_0x4c);
-        ImGui::InputFloat3("float[3] #02", &ptr->field36_0x6c);
-        ImGui::InputFloat3("float[3] #03", &ptr->field39_0x78);
-        ImGui::InputFloat3("float[3] #04", &ptr->field42_0x84);
-        ImGui::InputFloat3("float[3] #05", ptr->field75_0xb4);
-        ImGui::InputFloat3("float[3] #06", ptr->field88_0xcc);
-        ImGui::InputFloat3("float[3] #07", ptr->field101_0xe4);
-        ImGui::InputFloat3("float[3] #08", ptr->field114_0xfc);
-        ImGui::InputFloat3("float[3] #09", &ptr->field247_0x18c);
-        ImGui::InputFloat3("float[3] #10", &ptr->field254_0x19c);
-        ImGui::InputFloat3("float[3] #11", &ptr->field261_0x1ac);
+        ImGui::InputFloat3("Position", ptr->position);
+        ImGui::PopItemWidth();
+        ImGui::PushItemWidth(240);
+        ImGui::InputFloat4("Matrix [0]", ptr->matrix_4x4_maybe + 0);
+        ImGui::InputFloat4("Matrix [1]", ptr->matrix_4x4_maybe + 4);
+        ImGui::InputFloat4("Matrix [2]", ptr->matrix_4x4_maybe + 8);
+        ImGui::InputFloat4("Matrix [3]", ptr->matrix_4x4_maybe + 12);
         ImGui::PopItemWidth();
     }
 }
