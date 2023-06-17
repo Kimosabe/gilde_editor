@@ -199,31 +199,12 @@ static LinkedList** g_current_room_ptr = (LinkedList**)0x07746cc;
 //----------------------------------------------------------------------------
 
 
-// TODO: can be removed?
-bool viewDoesNotExist(Character *ptr) {
-    return ImNodes::EditorContextGet().Nodes.IdMap.GetInt(static_cast<ImGuiID>(ptr->object_id), -1) < 0;
-}
-bool viewDoesNotExist(BuildingInstance *ptr) {
-    return ImNodes::EditorContextGet().Nodes.IdMap.GetInt(static_cast<ImGuiID>(ptr->object_id), -1) < 0;
-}
-bool viewDoesNotExist(LinkedList *ptr) {
-    return ImNodes::EditorContextGet().Nodes.IdMap.GetInt(static_cast<ImGuiID>(ptr->this_object_id), -1) < 0;
-}
-bool viewDoesNotExist(SomethingAboutBuilding *ptr) {
-    return ImNodes::EditorContextGet().Nodes.IdMap.GetInt(static_cast<ImGuiID>((int)ptr), -1) < 0;
-}
-bool linkDoesNotExist(int id) {
-    return ImNodes::EditorContextGet().Links.IdMap.GetInt(static_cast<ImGuiID>(id), -1) < 0;
-}
-
-//----------------------------------------------------------------------------
-
 struct ViewBase;
 struct ViewLinkedList;
 struct ViewCharacter;
 struct ViewBuildingInstance;
 struct ViewSomethingAboutBuilding;
-struct Connection;
+struct ConnectionV2;
 
 struct NodesViewer {
     int widget_id;
@@ -235,30 +216,56 @@ struct NodesViewer {
 };
 static NodesViewer g_viewer;
 
-ViewBase *CreateView(NodesViewer *viewer, Character* ptr);
-ViewBase *CreateView(NodesViewer *viewer, LinkedList* ptr);
-ViewBase *CreateView(NodesViewer *viewer, BuildingInstance* ptr);
+struct ConnectionV2 {
+    typedef int (*GetID)(void*);
+    typedef bool (*GetPtr)(ConnectionV2*, void**);
+    typedef ViewBase *(*CreateView)(NodesViewer*, void*);
 
-struct Connection {
+    int values[3];
     int socket;
     int link;
-    const char* name;
+    const char *name;
+    ViewBase *view;
+    bool draw;
 
-    ViewBase *view = nullptr;
-    bool draw = false;
+    GetID get_id;
+    GetPtr get_ptr;
+    CreateView create_view;
 
-    ~Connection();
-
-    void Cleanup(NodesViewer *viewer);
-
-    template<class T>
-    void DrawSocket(NodesViewer *viewer, T *node);
-    void DrawLink(NodesViewer *viewer);
+    ~ConnectionV2() {
+        if (view) {
+            delete view;
+            view = nullptr;
+        }
+    }
 };
+
+int GetCharacterID(void* ptr);
+int GetBuildingInstanceID(void* ptr);
+int GetLinkedListID(void* ptr);
+int GetSomethingAboutBuildingID(void* ptr);
+
+bool viewDoesNotExist(ConnectionV2 *c, void *ptr);
+
+void Cleanup(ConnectionV2* c, NodesViewer *viewer);
+void DrawSocket(ConnectionV2* c, NodesViewer *viewer);
+void DrawLink(ConnectionV2* c, NodesViewer *viewer);
+
+bool GetCharacterPtrByIndex(ConnectionV2* c, void** ptr);
+bool GetCharacterPtr(ConnectionV2* c, void** ptr);
+bool GetBuildingInstancePtr(ConnectionV2* c, void** ptr);
+bool GetLinkedListPtr(ConnectionV2* c, void** ptr);
+bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr);
+
+ViewBase *CreateCharacterView(NodesViewer *viewer, void* ptr);
+ViewBase *CreateBuildingInstanceView(NodesViewer* viewer, void* ptr);
+ViewBase *CreateLinkedListView(NodesViewer* viewer, void* ptr);
+ViewBase *CreateSomethingAboutBuildingView(NodesViewer* viewer, void* ptr);
+
 
 struct ViewBase {
     MemoryEditor mem_edit;
-    std::vector<Connection> connections;
+    std::vector<ConnectionV2> connections_v2;
     int input_socket;
     void* data;
     size_t data_size;
@@ -274,12 +281,12 @@ struct ViewBase {
 
     virtual ~ViewBase() = default;
     virtual void Cleanup(NodesViewer *viewer) {
-        for (auto& c : connections) {
-            c.Cleanup(viewer);
+        for (auto &c : connections_v2) {
+            ::Cleanup(&c, viewer);
         }
     };
     virtual int Id() = 0;
-    virtual void DrawNode(NodesViewer *viewer) = 0;
+    virtual void DrawNode(NodesViewer *viewer) {};
     virtual void Draw(NodesViewer *viewer) {
         ImNodes::BeginNode(Id());
         {
@@ -287,49 +294,57 @@ struct ViewBase {
             if (data && data_size) {
                 ImGui::Checkbox("Memory editor", &show_mem_edit);
             }
+
+            ImNodes::BeginInputAttribute(input_socket);
+            ImGui::Text("Parent");
+            ImNodes::EndInputAttribute();
+
+            for (auto &c : connections_v2) {
+                DrawSocket(&c, viewer);
+            }
         }
         ImNodes::EndNode();
 
-        for (auto& c: connections) {
-            c.DrawLink(viewer);
+        for (auto &c : connections_v2) {
+            DrawLink(&c, viewer);
         }
     };
 };
+
+#define CHARACTER_INDEX_CONNECTION(index, name) \
+connections_v2.push_back({ {(int)(index), (int)(g_characters), (int)(g_characters + 768)}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetCharacterID, GetCharacterPtrByIndex, CreateCharacterView });
+#define CHARACTER_CONNECTION(ptr, name) \
+connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetCharacterID, GetCharacterPtr, CreateCharacterView });
+#define BUILDING_INSTANCE_CONNECTION(ptr, name) \
+connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetBuildingInstanceID, GetBuildingInstancePtr, CreateBuildingInstanceView });
+#define LINKED_LIST_CONNECTION(ptr, name) \
+connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetLinkedListID, GetLinkedListPtr, CreateLinkedListView });
+#define SAB_CONNECTION(ptr, name) \
+connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetSomethingAboutBuildingID, GetSomethingAboutBuildingPtr, CreateSomethingAboutBuildingView });
 
 struct ViewInit : ViewBase {
     int id;
 
+    short current_player_index = 1;
+
     ViewInit(NodesViewer *viewer, void* d) : ViewBase(viewer, d, 0) {
         id = viewer->widget_id--;
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Market" });
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Building #1" });
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Building #2" });
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Room" });
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Current Player" });
+        BUILDING_INSTANCE_CONNECTION(g_market_ptr, "Market");
+        BUILDING_INSTANCE_CONNECTION(g_current_building_ptr, "Current Building #1");
+        BUILDING_INSTANCE_CONNECTION(g_current_building_ptr_2, "Current Building #2");
+        LINKED_LIST_CONNECTION(g_current_room_ptr, "Current Room");
+        CHARACTER_INDEX_CONNECTION(&current_player_index, "Current Player");
     }
 
     virtual ~ViewInit() = default;
     int Id() { return id; }
-    void DrawNode(NodesViewer *viewer) {
-        connections[0].DrawSocket(viewer, *g_market_ptr);
-        connections[1].DrawSocket(viewer, *g_current_building_ptr);
-        connections[2].DrawSocket(viewer, *g_current_building_ptr_2);
-        connections[3].DrawSocket(viewer, *g_current_room_ptr);
-        connections[4].DrawSocket(viewer, g_characters + 1);
-    }
 };
 
 struct ViewLinkedList : public ViewBase {
-    enum {
-        CONTENT,
-        SAB_PTR,
-        NEXT,
-    };
-
     ViewLinkedList(NodesViewer *viewer, LinkedList* d) : ViewBase(viewer, d, sizeof(*d)) {
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Content" });
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "SAB ptr" });
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Next" });
+        LINKED_LIST_CONNECTION(&d->content, "Content");
+        SAB_CONNECTION(&d->something_about_building_ptr, "SAB ptr");
+        LINKED_LIST_CONNECTION(&d->next, "Next");
     }
 
     virtual ~ViewLinkedList() = default;
@@ -341,8 +356,8 @@ struct ViewCharacter : public ViewBase {
     virtual ~ViewCharacter() = default;
 
     ViewCharacter(NodesViewer *viewer, Character* d) : ViewBase(viewer, d, sizeof(*d)) {
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Inventory" });
-        connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Home" });
+        LINKED_LIST_CONNECTION(&d->inventory, "Inventory");
+        BUILDING_INSTANCE_CONNECTION(&d->maybe_home, "Home");
     }
     int Id() { return ((Character *)this->data)->object_id; }
     void DrawNode(NodesViewer *viewer);
@@ -368,76 +383,134 @@ struct ViewSomethingAboutBuilding : public ViewBase {
 //----------------------------------------------------------------------------
 
 
-Connection::~Connection() {
-    if (view) {
-        delete view;
-        view = nullptr;
-    }
+int GetCharacterID(void* ptr) {
+    return ((Character *)ptr)->object_id;
+}
+int GetBuildingInstanceID(void* ptr) {
+    return ((BuildingInstance *)ptr)->object_id;
+}
+int GetLinkedListID(void* ptr) {
+    return ((LinkedList *)ptr)->this_object_id;
+}
+int GetSomethingAboutBuildingID(void* ptr) {
+    return (int)ptr;
 }
 
-void Connection::Cleanup(NodesViewer *viewer) {
-    if (view) {
-        auto pair = std::make_pair(socket, view->input_socket);
+bool viewDoesNotExist(ConnectionV2 *c, void *ptr) {
+    return ImNodes::EditorContextGet().Nodes.IdMap.GetInt(static_cast<ImGuiID>(c->get_id(ptr)), -1) < 0;
+}
+bool linkDoesNotExist(int id) {
+    return ImNodes::EditorContextGet().Links.IdMap.GetInt(static_cast<ImGuiID>(id), -1) < 0;
+}
+
+
+void Cleanup(ConnectionV2* c, NodesViewer *viewer) {
+    if (c->view) {
+        auto pair = std::make_pair(c->socket, c->view->input_socket);
         viewer->connections.extract(pair);
-        view->Cleanup(viewer);
+        c->view->Cleanup(viewer);
     }
 }
+void DrawSocket(ConnectionV2* c, NodesViewer *viewer) {
+    c->draw = false;
+    void *ptr;
 
-template<class T>
-void Connection::DrawSocket(NodesViewer *viewer, T *node) {
-    draw = false;
-
-    // XXX: temporary hack for SAB pointers
-    bool bad_sab = node >= (T*)0x1040640 && node <= *(T**)0x067a370;
-
-    if (node && !bad_sab && (!view || view->data == node)) {
-        if (!viewDoesNotExist(node) && linkDoesNotExist(link)) {
-            // TODO: write something depending on the T* ???
-            ImGui::Text("%s (%X) Already opened", name, node);
+    if (c->get_ptr(c, &ptr)) {
+        if (!viewDoesNotExist(c, ptr) && linkDoesNotExist(c->link)) {
+            // TODO: write something depending on the c ???
+            ImGui::Text("%s (%X) Already opened", c->name, ptr);
             return;
         }
 
-        ImNodes::BeginOutputAttribute(socket);
+        ImNodes::BeginOutputAttribute(c->socket);
         {
-            if (!view) {
-                view = CreateView(viewer, node);
+            if (!c->view) {
+                c->view = c->create_view(viewer, ptr);
             }
 
-            auto pair = std::make_pair(socket, view->input_socket);
+            auto pair = std::make_pair(c->socket, c->view->input_socket);
 
-            ImGui::Text("%s (%X)", name, node);
+            ImGui::Text("%s (%X)", c->name, ptr);
             ImGui::SameLine();
 
             if (viewer->connections.contains(pair)) {
                 if (ImGui::Button("Hide")) {
                     viewer->connections.extract(pair);
-                    view->Cleanup(viewer);
-                    draw = false;
+                    c->view->Cleanup(viewer);
+                    c->draw = false;
                 } else {
-                    draw = true;
+                    c->draw = true;
                 }
             } else {
-                draw = false;
+                c->draw = false;
                 if (ImGui::Button("Show")) {
                     viewer->connections.insert(pair);
                 }
             }
         }
         ImNodes::EndOutputAttribute();
-    } else if (view) {
-        auto pair = std::make_pair(socket, view->input_socket);
+    } else if (c->view) {
+        auto pair = std::make_pair(c->socket, c->view->input_socket);
         viewer->connections.extract(pair);
-        view->Cleanup(viewer);
-        delete view;
-        view = nullptr;
+        c->view->Cleanup(viewer);
+        delete c->view;
+        c->view = nullptr;
     }
 }
-void Connection::DrawLink(NodesViewer *viewer) {
-    if (draw) {
-        view->Draw(viewer);
-        ImNodes::Link(link, socket, view->input_socket);
-        draw = false;
+void DrawLink(ConnectionV2* c, NodesViewer *viewer) {
+    if (c->draw) {
+        c->view->Draw(viewer);
+        ImNodes::Link(c->link, c->socket, c->view->input_socket);
+        c->draw = false;
     }
+}
+
+bool GetCharacterPtrByIndex(ConnectionV2* c, void** ptr) {
+    short index = *(short*)c->values[0];
+    Character *min_ptr = (Character *)c->values[1];
+    Character *max_ptr = (Character *)c->values[2];
+    *ptr = min_ptr + index;
+
+    return index > 0 && *ptr >= min_ptr && *ptr < max_ptr && (!c->view || *ptr == c->view->data) && index == ((Character *)*ptr)->index;
+}
+bool GetCharacterPtr(ConnectionV2* c, void** ptr) {
+    Character *character = *(Character**)c->values[0];
+    *ptr = character;
+
+    return *ptr && (!c->view || *ptr == c->view->data) && character->index > 0;
+}
+bool GetBuildingInstancePtr(ConnectionV2* c, void** ptr) {
+    BuildingInstance *building = *(BuildingInstance**)c->values[0];
+    *ptr = building;
+
+    return *ptr && (!c->view || *ptr == c->view->data) && building->object_id > 0;
+}
+bool GetLinkedListPtr(ConnectionV2* c, void** ptr) {
+    LinkedList* object = *(LinkedList**)c->values[0];
+    *ptr = object;
+
+    return *ptr && (!c->view || *ptr == c->view->data) && object->this_object_id > 0;
+}
+bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr) {
+    SomethingAboutBuilding* sab = *(SomethingAboutBuilding**)c->values[0];
+    *ptr = sab;
+
+    // XXX: maybe it's just another structure
+    bool bad_sab = *ptr >= (void*)0x1040640 && *ptr <= *(void**)0x067a370;
+
+    return *ptr && (!c->view || *ptr == c->view->data) && !bad_sab;
+}
+ViewBase *CreateCharacterView(NodesViewer *viewer, void* ptr) {
+    return new ViewCharacter(viewer, (Character *)ptr);
+}
+ViewBase* CreateBuildingInstanceView(NodesViewer* viewer, void* ptr) {
+    return new ViewBuildingInstance(viewer, (BuildingInstance*)ptr);
+}
+ViewBase* CreateLinkedListView(NodesViewer* viewer, void* ptr) {
+    return new ViewLinkedList(viewer, (LinkedList*)ptr);
+}
+ViewBase* CreateSomethingAboutBuildingView(NodesViewer* viewer, void* ptr) {
+    return new ViewSomethingAboutBuilding(viewer, (SomethingAboutBuilding*)ptr);
 }
 
 void ViewLinkedList::DrawNode(NodesViewer *viewer) {
@@ -499,10 +572,6 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
         break;
     }
 
-    ImNodes::BeginInputAttribute(input_socket);
-    ImGui::Text("Parent node");
-    ImNodes::EndInputAttribute();
-
     if (show_mem_edit) {
         mem_edit.DrawContents(data, data_size);
     } else {
@@ -536,9 +605,9 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
         }
     }
 
-    if (node->content) {
-        connections[CONTENT].DrawSocket(viewer, node->content);
-    } else {
+    ImGui::Text("Unknown pointer: %X", node->ptr_to_64_bytes_linked_list);
+
+    if (!node->content) {
         ImGui::Text("Content");
         ImGui::SameLine();
         if (ImGui::Button("Copy self ->")) {
@@ -548,11 +617,7 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
             tmp->this_object_id = (*g_objects_count)++;
         }
     }
-    connections[SAB_PTR].DrawSocket(viewer, node->something_about_building_ptr);
-    ImGui::Text("Unknown pointer: %X", node->ptr_to_64_bytes_linked_list);
-    if (node->next) {
-        connections[NEXT].DrawSocket(viewer, node->next);
-    } else {
+    if (!node->next) {
         ImGui::Text("Next");
         ImGui::SameLine();
         if (ImGui::Button("Copy self -->")) {
@@ -612,21 +677,14 @@ void ViewCharacter::DrawNode(NodesViewer *viewer) {
         ImGui::Text("Unknown int #5: %X (%i)", character->field413_0x20c, character->field413_0x20c);
         */
     }
-
-    ImNodes::BeginInputAttribute(input_socket);
-    ImGui::Text("Parent");
-    ImNodes::EndInputAttribute();
-
-    connections[0].DrawSocket(viewer, character->inventory);
-    connections[1].DrawSocket(viewer, character->maybe_home);
 }
 
 ViewBuildingInstance::ViewBuildingInstance(NodesViewer *viewer, BuildingInstance* d) : ViewBase(viewer, d, sizeof(*d))
 {
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Content" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Character #1" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Character #2" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "SAB pointer" });
+    LINKED_LIST_CONNECTION(&d->building_content, "Content");
+    CHARACTER_INDEX_CONNECTION(&d->character_index_1, "Character #1");
+    CHARACTER_INDEX_CONNECTION(&d->character_index_2, "Character #2");
+    SAB_CONNECTION(&d->building_something, "SAB pointer");
 }
 
 void ViewBuildingInstance::DrawNode(NodesViewer *viewer) {
@@ -662,28 +720,25 @@ void ViewBuildingInstance::DrawNode(NodesViewer *viewer) {
 
         ImGui::Text("Characters: [%i, %i]", node->character_index_1, node->character_index_2);
     }
-
-    ImNodes::BeginInputAttribute(input_socket);
-    ImGui::Text("Parent");
-    ImNodes::EndInputAttribute();
-
-    connections[0].DrawSocket(viewer, node->building_content);
-    connections[3].DrawSocket(viewer, node->building_something);
-    connections[1].DrawSocket(viewer, g_characters + node->character_index_1);
-    connections[2].DrawSocket(viewer, g_characters + node->character_index_2);
 }
 
 ViewSomethingAboutBuilding::ViewSomethingAboutBuilding(NodesViewer *viewer, SomethingAboutBuilding* d)
 : ViewBase(viewer, d, sizeof(*d))
 {
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Ptr #1" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Ptr #2" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Ptr #3" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Ptr #4" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Ptr #5" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Ptr #6" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Building" });
-    connections.push_back({ viewer->widget_id--, viewer->widget_id--, "Ptr #7" });
+    SAB_CONNECTION(&d->something_about_building_ptr_1, "Ptr #1");
+    SAB_CONNECTION(&d->something_about_building_ptr_2, "Ptr #2");
+    SAB_CONNECTION(&d->ptr_1, "Ptr #3");
+    SAB_CONNECTION(&d->ptr_2, "Ptr #4");
+    SAB_CONNECTION(&d->ptr_3, "Ptr #5");
+    SAB_CONNECTION(&d->ptr_4, "Ptr #6");
+    if (*d->name == 'o') {
+        LINKED_LIST_CONNECTION(&d->building_ptr, "object");
+    } else if (*d->name == 'g') {
+        BUILDING_INSTANCE_CONNECTION(&d->building_ptr, "building");
+    } else /*== 's'*/ {
+        CHARACTER_CONNECTION(&d->building_ptr, "character");
+    }
+    SAB_CONNECTION(&d->yet_another_ptr, "Ptr #7");
 }
 
 void ViewSomethingAboutBuilding::DrawNode(NodesViewer *viewer) {
@@ -713,36 +768,6 @@ void ViewSomethingAboutBuilding::DrawNode(NodesViewer *viewer) {
         ImGui::InputFloat3("float[3] #11", &ptr->field261_0x1ac);
         ImGui::PopItemWidth();
     }
-
-    ImNodes::BeginInputAttribute(input_socket);
-    ImGui::Text("Parent");
-    ImNodes::EndInputAttribute();
-
-    connections[0].DrawSocket(viewer, ptr->something_about_building_ptr_1);
-    connections[1].DrawSocket(viewer, ptr->something_about_building_ptr_2);
-    connections[2].DrawSocket(viewer, ptr->ptr_1);
-    connections[3].DrawSocket(viewer, ptr->ptr_2);
-    connections[4].DrawSocket(viewer, ptr->ptr_3);
-    connections[5].DrawSocket(viewer, ptr->ptr_4);
-    connections[6].DrawSocket(viewer, ptr->building_ptr);
-    connections[7].DrawSocket(viewer, ptr->yet_another_ptr);
-}
-
-
-//----------------------------------------------------------------------------
-
-
-ViewBase *CreateView(NodesViewer *viewer, Character* ptr) {
-    return new ViewCharacter(viewer, ptr);
-}
-ViewBase *CreateView(NodesViewer *viewer, LinkedList* ptr) {
-    return new ViewLinkedList(viewer, ptr);
-}
-ViewBase *CreateView(NodesViewer *viewer, BuildingInstance* ptr) {
-    return new ViewBuildingInstance(viewer, ptr);
-}
-ViewBase *CreateView(NodesViewer *viewer, SomethingAboutBuilding* ptr) {
-    return new ViewSomethingAboutBuilding(viewer, ptr);
 }
 
 
