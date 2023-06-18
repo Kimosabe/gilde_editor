@@ -4,10 +4,7 @@
 
 #pragma comment(lib,"user32.lib")
 
-#define OPEN_ENGINE_ADDR 0x0538D00
-#define CALL_TO_OPEN_ENGINE_INSIDE_MAIN 0x545166
-#define WIN_MESSAGE_LOOOP_ADDR 0x5356E0
-#define CALL_TO_WIN_MESSAGE_LOOP_INSIDE_MASTER 0x5373f7
+#include "globals.h"
 
 void gui_init();
 void gui_loop_step();
@@ -31,7 +28,7 @@ void PrintMessage() {
 void win_message_lopp_wrapper() {
     gui_loop_step();
 
-    WinMessageLoopPtr f = (WinMessageLoopPtr)WIN_MESSAGE_LOOOP_ADDR;
+    WinMessageLoopPtr f = (WinMessageLoopPtr)_G(WIN_MESSAGE_LOOOP_ADDR);
     f();
     //PrintMessage();
 }
@@ -43,7 +40,7 @@ int OpenEngineWrapper() {
     PrintMessage();*/
     gui_init();
 
-    OpenEnginePtr openEngine = (OpenEnginePtr)OPEN_ENGINE_ADDR;
+    OpenEnginePtr openEngine = (OpenEnginePtr)_G(OPEN_ENGINE_ADDR);
     return openEngine();
     /*void* fn_ptr = (void*)OPEN_ENGINE_ADDR;
     __asm {
@@ -54,15 +51,6 @@ int OpenEngineWrapper() {
 }
 
 }
-
-struct Functions {
-    size_t originalFunctionPtr;
-    void* localFunctionPtr;
-    size_t callCommandPtr;
-} g_replacement_array[] = {
-    {OPEN_ENGINE_ADDR, OpenEngineWrapper, CALL_TO_OPEN_ENGINE_INSIDE_MAIN},
-    {WIN_MESSAGE_LOOOP_ADDR, win_message_lopp_wrapper, CALL_TO_WIN_MESSAGE_LOOP_INSIDE_MASTER},
-};
 
 #pragma pack(push, 1)
 struct Call {
@@ -77,6 +65,17 @@ BOOL WINAPI DllMain(
     LPVOID lpvReserved )  // reserved
 {
     if (fdwReason == DLL_PROCESS_ATTACH) {
+        InitGlobals();
+
+        struct Functions {
+            size_t originalFunctionPtr;
+            void* localFunctionPtr;
+            size_t callCommandPtr;
+        } g_replacement_array[] = {
+            {_G(OPEN_ENGINE_ADDR), OpenEngineWrapper, _G(CALL_TO_OPEN_ENGINE_INSIDE_MAIN)},
+            {_G(WIN_MESSAGE_LOOOP_ADDR), win_message_lopp_wrapper, _G(CALL_TO_WIN_MESSAGE_LOOP_INSIDE_MASTER)},
+        };
+
         Functions* ptr = g_replacement_array;
         Functions *end = g_replacement_array + sizeof(g_replacement_array)/sizeof(*g_replacement_array);
         for (; ptr < end; ++ptr) {

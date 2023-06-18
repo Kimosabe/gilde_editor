@@ -18,9 +18,7 @@
 #include "imnodes_internal.h"
 #include "imgui_memory_editor.h"
 
-#pragma pack(push, 1)
-#include "ghidra.h"
-#pragma pack(pop)
+#include "globals.h"
 
 
 //----------------------------------------------------------------------------
@@ -168,34 +166,6 @@ bool SliderByte(const char* label, unsigned char* v, int v_min, int v_max, const
     return SliderScalar(label, ImGuiDataType_U8, v, &v_min, &v_max, format, flags);
 }
 }
-
-
-//----------------------------------------------------------------------------
-
-
-typedef LinkedList *(*__FindFreeLinkedListNode)();
-__FindFreeLinkedListNode FindFreeLinkedListNode = (__FindFreeLinkedListNode)0x0502e00;
-
-typedef ProductionInfo *(*FN_get_production_info_005b1aa0)(BuildingInstance *);
-FN_get_production_info_005b1aa0 GetProductionInfo = (FN_get_production_info_005b1aa0)0x05b1aa0;
-
-// Returns: 0 - nothing found, 1 - building found, 2 - linked list found, 3 - character found
-typedef int (*FN_find_by_object_id_005015e0)(BuildingInstance **param_1,LinkedList **param_2,Character **param_3,int object_id);
-FN_find_by_object_id_005015e0 FindById = (FN_find_by_object_id_005015e0)0x05015e0;
-
-
-//----------------------------------------------------------------------------
-
-
-static int *g_objects_count = (int*)0x0699364;
-static ObjectPrototype_65** g_objects_prototypes = (ObjectPrototype_65**)0x099EC10;
-static Character* g_characters = (Character*)0x7f4ca0;
-static BuildingInstance **g_market_ptr = (BuildingInstance**)0x0773D78;
-static BuildingInstance** g_current_building_ptr = (BuildingInstance**)0x0774718;
-static BuildingInstance** g_current_building_ptr_2 = (BuildingInstance**)0x07746c8;
-static LinkedList** g_current_room_ptr = (LinkedList**)0x07746cc;
-static Character_580* g_char_580_1 = (Character_580*)0x14d0020;
-static Character_580* g_char_580_2 = (Character_580*)0x1551f40;
 
 
 //----------------------------------------------------------------------------
@@ -548,21 +518,27 @@ bool GetCharacterPtrByIndex(ConnectionV2* c, void** ptr) {
     Character *max_ptr = (Character *)c->values[2];
     *ptr = min_ptr + index;
 
-    return index > 0 && *ptr >= min_ptr && *ptr < max_ptr && (!c->view || *ptr == c->view->data) && index == ((Character *)*ptr)->index;
+    return index > 0 && min_ptr && *ptr >= min_ptr && *ptr < max_ptr && (!c->view || *ptr == c->view->data) && index == ((Character *)*ptr)->index;
 }
 bool GetCharacterPtr(ConnectionV2* c, void** ptr) {
+    if (!c->values[0]) return false;
+
     Character *character = *(Character**)c->values[0];
     *ptr = character;
 
     return *ptr && (!c->view || *ptr == c->view->data) && character->index > 0;
 }
 bool GetBuildingInstancePtr(ConnectionV2* c, void** ptr) {
+    if (!c->values[0]) return false;
+
     BuildingInstance *building = *(BuildingInstance**)c->values[0];
     *ptr = building;
 
     return *ptr && (!c->view || *ptr == c->view->data) && building->object_id > 0;
 }
 bool GetLinkedListPtr(ConnectionV2* c, void** ptr) {
+    if (!c->values[0]) return false;
+
     LinkedList* object = *(LinkedList**)c->values[0];
     *ptr = object;
 
@@ -580,6 +556,8 @@ bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr) {
     return *ptr && (!c->view || *ptr == c->view->data) && !bad_sab;
 }
 bool GetIDPtr(ConnectionV2* c, void** ptr) {
+    if (!c->values[0]) return false;
+
     int id = *(int*)c->values[0];
     void *exiting_ptr = (void *)c->values[2];
     int existing_id = 0;
@@ -627,6 +605,8 @@ bool GetIDPtr(ConnectionV2* c, void** ptr) {
     return id > 0 && id == existing_id && *ptr && (!c->view || *ptr == c->view->data);
 }
 bool GetRawPtr(ConnectionV2* c, void** ptr) {
+    if (!c->values[0]) return false;
+
     void *current_ptr = *(void**)c->values[0];
     *ptr = current_ptr;
 
