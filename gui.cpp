@@ -551,7 +551,7 @@ bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr) {
     *ptr = sab;
 
     // XXX: maybe it's just another structure
-    bool bad_sab = *ptr >= (void*)0x1040640 && *ptr <= *(void**)0x067a370;
+    bool bad_sab = *ptr >= (void*)_G(G_BAD_SAB_POINTERS_START) && *ptr <= *(void**)_G(G_BAD_SAB_POINTERS_END);
 
     return *ptr && (!c->view || *ptr == c->view->data) && !bad_sab;
 }

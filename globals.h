@@ -30,6 +30,8 @@ enum GLOBALS {
     G_CURRENT_ROOM_PTR,
     G_CHAR_580_1,
     G_CHAR_580_2,
+    G_BAD_SAB_POINTERS_START,
+    G_BAD_SAB_POINTERS_END,
 
     GLOBALS_SIZE // Must be the last
 };
