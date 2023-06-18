@@ -186,7 +186,7 @@ struct NodesViewer {
     ViewBase *root_view;
     float minimap_fraction = 0.15f;
     ImNodesMiniMapLocation minimap_location = ImNodesMiniMapLocation_BottomRight;
-    bool draw_minimap = false;
+    bool draw_minimap = true;
 };
 static NodesViewer g_viewer;
 
