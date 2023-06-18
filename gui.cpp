@@ -204,6 +204,7 @@ struct ViewLinkedList;
 struct ViewCharacter;
 struct ViewBuildingInstance;
 struct ViewSomethingAboutBuilding;
+struct ViewMemoryEdit;
 struct ConnectionV2;
 
 struct NodesViewer {
@@ -258,12 +259,14 @@ bool GetBuildingInstancePtr(ConnectionV2* c, void** ptr);
 bool GetLinkedListPtr(ConnectionV2* c, void** ptr);
 bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr);
 bool GetIDPtr(ConnectionV2* c, void** ptr);
+bool GetRawPtr(ConnectionV2* c, void** ptr);
 
 ViewBase *CreateCharacterView(ConnectionV2*, NodesViewer *viewer, void* ptr);
 ViewBase *CreateBuildingInstanceView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateLinkedListView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateSomethingAboutBuildingView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateIDView(ConnectionV2*, NodesViewer* viewer, void* ptr);
+ViewBase *CreateMemoryEditView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 
 
 struct ViewBase {
@@ -294,9 +297,6 @@ struct ViewBase {
         ImNodes::BeginNode(Id());
         {
             DrawNode(viewer);
-            if (data && data_size) {
-                ImGui::Checkbox("Memory editor", &show_mem_edit);
-            }
 
             ImNodes::BeginInputAttribute(input_socket);
             ImGui::Text("Parent");
@@ -304,6 +304,10 @@ struct ViewBase {
 
             for (auto &c : connections_v2) {
                 DrawSocket(&c, viewer);
+            }
+
+            if (data && data_size) {
+                ImGui::Checkbox("Memory editor", &show_mem_edit);
             }
         }
         ImNodes::EndNode();
@@ -326,6 +330,8 @@ connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget
 connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetSomethingAboutBuildingPtr, CreateSomethingAboutBuildingView });
 #define ID_CONNECTION(id, name) \
 connections_v2.push_back({ {(int)id, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetIDByID, GetIDPtr, CreateIDView });
+#define MEMORY_EDIT_CONNECTION(ptr, size, name) \
+connections_v2.push_back({ {(int)ptr, (int)size, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetRawPtr, CreateMemoryEditView });
 
 struct ViewInit : ViewBase {
     int id;
@@ -345,6 +351,19 @@ struct ViewInit : ViewBase {
     int Id() { return id; }
 };
 
+struct ViewMemoryEdit : ViewBase {
+    ViewMemoryEdit(NodesViewer *viewer, void* d, size_t size)
+    : ViewBase(viewer, d, size) {
+        show_mem_edit = true;
+    }
+    int Id() { return (int)data; }
+    void DrawNode(NodesViewer *viewer) {
+        if (show_mem_edit) {
+            mem_edit.DrawContents(data, data_size);
+        }
+    };
+};
+
 struct ViewLinkedList : public ViewBase {
     ViewLinkedList(NodesViewer *viewer, LinkedList* d) : ViewBase(viewer, d, sizeof(*d)) {
         ID_CONNECTION(&d->container_object_id, "Container");
@@ -352,6 +371,7 @@ struct ViewLinkedList : public ViewBase {
         LINKED_LIST_CONNECTION(&d->content, "Content");
         SAB_CONNECTION(&d->something_about_building_ptr, "SAB ptr");
         LINKED_LIST_CONNECTION(&d->next, "Next");
+        MEMORY_EDIT_CONNECTION(&d->ptr_to_64_bytes_linked_list, sizeof(UnknownLinkedList64), "LinkedList64");
     }
 
     virtual ~ViewLinkedList() = default;
@@ -564,6 +584,12 @@ bool GetIDPtr(ConnectionV2* c, void** ptr) {
 
     return id > 0 && id == existing_id && *ptr && (!c->view || *ptr == c->view->data);
 }
+bool GetRawPtr(ConnectionV2* c, void** ptr) {
+    void *current_ptr = *(void**)c->values[0];
+    *ptr = current_ptr;
+
+    return *ptr && (!c->view || *ptr == c->view->data);
+}
 ViewBase *CreateCharacterView(ConnectionV2*, NodesViewer *viewer, void* ptr) {
     return new ViewCharacter(viewer, (Character *)ptr);
 }
@@ -588,6 +614,9 @@ ViewBase* CreateIDView(ConnectionV2* c, NodesViewer* viewer, void* ptr) {
 
     assert(false && "Can't create view by ID");
     return nullptr;
+}
+ViewBase* CreateMemoryEditView(ConnectionV2* c, NodesViewer* viewer, void* ptr) {
+    return new ViewMemoryEdit(viewer, ptr, (size_t)c->values[1]);
 }
 
 void ViewLinkedList::DrawNode(NodesViewer *viewer) {
@@ -822,6 +851,9 @@ ViewSomethingAboutBuilding::ViewSomethingAboutBuilding(NodesViewer *viewer, Some
         CHARACTER_CONNECTION(&d->instance_of_any_type_ptr, "character");
     }
     SAB_CONNECTION(&d->yet_another_ptr, "Ptr #7");
+    MEMORY_EDIT_CONNECTION(&d->light_info, sizeof(LightInfo), "Light Info");
+    MEMORY_EDIT_CONNECTION(&d->draw_data, sizeof(ObjectDrawData), "Draw Data");
+    MEMORY_EDIT_CONNECTION(&d->animation, sizeof(ObjectAnimation), "Animation");
 }
 
 void ViewSomethingAboutBuilding::DrawNode(NodesViewer *viewer) {
