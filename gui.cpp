@@ -217,9 +217,9 @@ struct NodesViewer {
 static NodesViewer g_viewer;
 
 struct ConnectionV2 {
-    typedef int (*GetID)(void*);
+    typedef int (*GetID)(ConnectionV2*, void*);
     typedef bool (*GetPtr)(ConnectionV2*, void**);
-    typedef ViewBase *(*CreateView)(NodesViewer*, void*);
+    typedef ViewBase *(*CreateView)(ConnectionV2*, NodesViewer*, void*);
 
     int values[3];
     int socket;
@@ -240,10 +240,11 @@ struct ConnectionV2 {
     }
 };
 
-int GetCharacterID(void* ptr);
-int GetBuildingInstanceID(void* ptr);
-int GetLinkedListID(void* ptr);
-int GetSomethingAboutBuildingID(void* ptr);
+int GetCharacterID(ConnectionV2 *c, void* ptr);
+int GetBuildingInstanceID(ConnectionV2 *c, void* ptr);
+int GetLinkedListID(ConnectionV2 *c, void* ptr);
+int PtrAsID(ConnectionV2 *c, void* ptr);
+int GetIDByID(ConnectionV2 *c, void* ptr);
 
 bool viewDoesNotExist(ConnectionV2 *c, void *ptr);
 
@@ -256,11 +257,13 @@ bool GetCharacterPtr(ConnectionV2* c, void** ptr);
 bool GetBuildingInstancePtr(ConnectionV2* c, void** ptr);
 bool GetLinkedListPtr(ConnectionV2* c, void** ptr);
 bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr);
+bool GetIDPtr(ConnectionV2* c, void** ptr);
 
-ViewBase *CreateCharacterView(NodesViewer *viewer, void* ptr);
-ViewBase *CreateBuildingInstanceView(NodesViewer* viewer, void* ptr);
-ViewBase *CreateLinkedListView(NodesViewer* viewer, void* ptr);
-ViewBase *CreateSomethingAboutBuildingView(NodesViewer* viewer, void* ptr);
+ViewBase *CreateCharacterView(ConnectionV2*, NodesViewer *viewer, void* ptr);
+ViewBase *CreateBuildingInstanceView(ConnectionV2*, NodesViewer* viewer, void* ptr);
+ViewBase *CreateLinkedListView(ConnectionV2*, NodesViewer* viewer, void* ptr);
+ViewBase *CreateSomethingAboutBuildingView(ConnectionV2*, NodesViewer* viewer, void* ptr);
+ViewBase *CreateIDView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 
 
 struct ViewBase {
@@ -320,7 +323,9 @@ connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget
 #define LINKED_LIST_CONNECTION(ptr, name) \
 connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetLinkedListID, GetLinkedListPtr, CreateLinkedListView });
 #define SAB_CONNECTION(ptr, name) \
-connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetSomethingAboutBuildingID, GetSomethingAboutBuildingPtr, CreateSomethingAboutBuildingView });
+connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetSomethingAboutBuildingPtr, CreateSomethingAboutBuildingView });
+#define ID_CONNECTION(id, name) \
+connections_v2.push_back({ {(int)id, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetIDByID, GetIDPtr, CreateIDView });
 
 struct ViewInit : ViewBase {
     int id;
@@ -342,6 +347,8 @@ struct ViewInit : ViewBase {
 
 struct ViewLinkedList : public ViewBase {
     ViewLinkedList(NodesViewer *viewer, LinkedList* d) : ViewBase(viewer, d, sizeof(*d)) {
+        ID_CONNECTION(&d->container_object_id, "Container");
+        ID_CONNECTION(&d->owner_object_id, "Owner");
         LINKED_LIST_CONNECTION(&d->content, "Content");
         SAB_CONNECTION(&d->something_about_building_ptr, "SAB ptr");
         LINKED_LIST_CONNECTION(&d->next, "Next");
@@ -356,6 +363,8 @@ struct ViewCharacter : public ViewBase {
     virtual ~ViewCharacter() = default;
 
     ViewCharacter(NodesViewer *viewer, Character* d) : ViewBase(viewer, d, sizeof(*d)) {
+        ID_CONNECTION(&d->object_id, "Some object");
+        ID_CONNECTION(&d->another_object_id, "Another object");
         LINKED_LIST_CONNECTION(&d->inventory, "Inventory");
         BUILDING_INSTANCE_CONNECTION(&d->maybe_home, "Home");
     }
@@ -383,21 +392,29 @@ struct ViewSomethingAboutBuilding : public ViewBase {
 //----------------------------------------------------------------------------
 
 
-int GetCharacterID(void* ptr) {
+int GetCharacterID(ConnectionV2 *c, void* ptr) {
     return ((Character *)ptr)->object_id;
 }
-int GetBuildingInstanceID(void* ptr) {
+int GetBuildingInstanceID(ConnectionV2 *c, void* ptr) {
     return ((BuildingInstance *)ptr)->object_id;
 }
-int GetLinkedListID(void* ptr) {
+int GetLinkedListID(ConnectionV2 *c, void* ptr) {
     return ((LinkedList *)ptr)->this_object_id;
 }
-int GetSomethingAboutBuildingID(void* ptr) {
+int PtrAsID(ConnectionV2 *c, void* ptr) {
+    return (int)ptr;
+}
+int GetIDByID(ConnectionV2 *c, void* ptr) {
+    int *id_ptr = (int *)c->values[0];
+
+    if (id_ptr) return *id_ptr;
+
+    assert(false && "Can't get ID by ID");
     return (int)ptr;
 }
 
 bool viewDoesNotExist(ConnectionV2 *c, void *ptr) {
-    return ImNodes::EditorContextGet().Nodes.IdMap.GetInt(static_cast<ImGuiID>(c->get_id(ptr)), -1) < 0;
+    return ImNodes::EditorContextGet().Nodes.IdMap.GetInt(static_cast<ImGuiID>(c->get_id(c, ptr)), -1) < 0;
 }
 bool linkDoesNotExist(int id) {
     return ImNodes::EditorContextGet().Links.IdMap.GetInt(static_cast<ImGuiID>(id), -1) < 0;
@@ -425,7 +442,7 @@ void DrawSocket(ConnectionV2* c, NodesViewer *viewer) {
         ImNodes::BeginOutputAttribute(c->socket);
         {
             if (!c->view) {
-                c->view = c->create_view(viewer, ptr);
+                c->view = c->create_view(c, viewer, ptr);
             }
 
             auto pair = std::make_pair(c->socket, c->view->input_socket);
@@ -500,17 +517,77 @@ bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr) {
 
     return *ptr && (!c->view || *ptr == c->view->data) && !bad_sab;
 }
-ViewBase *CreateCharacterView(NodesViewer *viewer, void* ptr) {
+bool GetIDPtr(ConnectionV2* c, void** ptr) {
+    int id = *(int*)c->values[0];
+    void *exiting_ptr = (void *)c->values[2];
+    int existing_id = 0;
+
+    if (!exiting_ptr) {
+        Character *character_ptr;
+        LinkedList *object_ptr;
+        BuildingInstance *building_ptr;
+
+        c->values[1] = FindById(&building_ptr, &object_ptr, &character_ptr, id);
+        switch (c->values[1]) {
+        case 1:
+            *ptr = building_ptr;
+            existing_id = building_ptr->object_id;
+            break;
+        case 2:
+            *ptr = object_ptr;
+            existing_id = object_ptr->this_object_id;
+            break;
+        case 3:
+            *ptr = character_ptr;
+            existing_id = character_ptr->object_id;
+            break;
+        case 0:
+        default:
+            *ptr = nullptr;
+            break;
+        }
+        c->values[2] = (int)*ptr;
+    } else {
+        *ptr = exiting_ptr;
+        switch (c->values[1]) {
+        case 1:
+            existing_id = ((BuildingInstance *)exiting_ptr)->object_id;
+            break;
+        case 2:
+            existing_id = ((LinkedList *)exiting_ptr)->this_object_id;
+            break;
+        case 3:
+            existing_id = ((Character *)exiting_ptr)->object_id;
+            break;
+        }
+    }
+
+    return id > 0 && id == existing_id && *ptr && (!c->view || *ptr == c->view->data);
+}
+ViewBase *CreateCharacterView(ConnectionV2*, NodesViewer *viewer, void* ptr) {
     return new ViewCharacter(viewer, (Character *)ptr);
 }
-ViewBase* CreateBuildingInstanceView(NodesViewer* viewer, void* ptr) {
+ViewBase* CreateBuildingInstanceView(ConnectionV2*, NodesViewer* viewer, void* ptr) {
     return new ViewBuildingInstance(viewer, (BuildingInstance*)ptr);
 }
-ViewBase* CreateLinkedListView(NodesViewer* viewer, void* ptr) {
+ViewBase* CreateLinkedListView(ConnectionV2*, NodesViewer* viewer, void* ptr) {
     return new ViewLinkedList(viewer, (LinkedList*)ptr);
 }
-ViewBase* CreateSomethingAboutBuildingView(NodesViewer* viewer, void* ptr) {
+ViewBase* CreateSomethingAboutBuildingView(ConnectionV2*, NodesViewer* viewer, void* ptr) {
     return new ViewSomethingAboutBuilding(viewer, (SomethingAboutBuilding*)ptr);
+}
+ViewBase* CreateIDView(ConnectionV2* c, NodesViewer* viewer, void* ptr) {
+    switch (c->values[1]) {
+    case 1:
+        return CreateBuildingInstanceView(c, viewer, ptr);
+    case 2:
+        return CreateLinkedListView(c, viewer, ptr);
+    case 3:
+        return CreateCharacterView(c, viewer, ptr);
+    }
+
+    assert(false && "Can't create view by ID");
+    return nullptr;
 }
 
 void ViewLinkedList::DrawNode(NodesViewer *viewer) {
@@ -686,6 +763,7 @@ void ViewCharacter::DrawNode(NodesViewer *viewer) {
 
 ViewBuildingInstance::ViewBuildingInstance(NodesViewer *viewer, BuildingInstance* d) : ViewBase(viewer, d, sizeof(*d))
 {
+    ID_CONNECTION(&d->character_object_id, "Some character");
     LINKED_LIST_CONNECTION(&d->building_content, "Content");
     CHARACTER_INDEX_CONNECTION(&d->character_index_1, "Character #1");
     CHARACTER_INDEX_CONNECTION(&d->character_index_2, "Character #2");
