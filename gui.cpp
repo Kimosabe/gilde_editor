@@ -194,6 +194,8 @@ static BuildingInstance **g_market_ptr = (BuildingInstance**)0x0773D78;
 static BuildingInstance** g_current_building_ptr = (BuildingInstance**)0x0774718;
 static BuildingInstance** g_current_building_ptr_2 = (BuildingInstance**)0x07746c8;
 static LinkedList** g_current_room_ptr = (LinkedList**)0x07746cc;
+static Character_580* g_char_580_1 = (Character_580*)0x14d0020;
+static Character_580* g_char_580_2 = (Character_580*)0x1551f40;
 
 
 //----------------------------------------------------------------------------
@@ -204,6 +206,7 @@ struct ViewLinkedList;
 struct ViewCharacter;
 struct ViewBuildingInstance;
 struct ViewSomethingAboutBuilding;
+struct ViewCharacter580;
 struct ViewMemoryEdit;
 struct ConnectionV2;
 
@@ -267,6 +270,7 @@ ViewBase *CreateLinkedListView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateSomethingAboutBuildingView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateIDView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateMemoryEditView(ConnectionV2*, NodesViewer* viewer, void* ptr);
+ViewBase *CreateCharacter580View(ConnectionV2*, NodesViewer* viewer, void* ptr);
 
 
 struct ViewBase {
@@ -332,6 +336,9 @@ connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget
 connections_v2.push_back({ {(int)id, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetIDByID, GetIDPtr, CreateIDView });
 #define MEMORY_EDIT_CONNECTION(ptr, size, name) \
 connections_v2.push_back({ {(int)ptr, (int)size, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetRawPtr, CreateMemoryEditView });
+#define CHARACTER_580_CONNECTION(ptr, name) \
+connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetRawPtr, CreateCharacter580View });
+
 
 struct ViewInit : ViewBase {
     int id;
@@ -345,6 +352,8 @@ struct ViewInit : ViewBase {
         BUILDING_INSTANCE_CONNECTION(g_current_building_ptr_2, "Current Building #2");
         LINKED_LIST_CONNECTION(g_current_room_ptr, "Current Room");
         CHARACTER_INDEX_CONNECTION(&current_player_index, "Current Player");
+        CHARACTER_580_CONNECTION(g_char_580_1, "g_char_580_1");
+        CHARACTER_580_CONNECTION(g_char_580_2, "g_char_580_2");
     }
 
     virtual ~ViewInit() = default;
@@ -364,14 +373,45 @@ struct ViewMemoryEdit : ViewBase {
     };
 };
 
+struct ViewCharacter580 : ViewBase {
+    ViewCharacter580(NodesViewer *viewer, Character_580* d) : ViewBase(viewer, d, sizeof(*d)) {
+        SAB_CONNECTION(&d->ptr_0, "SAB #0");
+        SAB_CONNECTION(&d->ptr_1, "SAB #1");
+        SAB_CONNECTION(d->ptr_2/*it's a pointer to a pointer*/, "SAB #2");
+        SAB_CONNECTION(&d->ptr_3, "SAB #3");
+
+        if (d->character_ptr >= g_characters && d->character_ptr < (g_characters + 768)) {
+            CHARACTER_CONNECTION(&d->character_ptr, "character");
+        } else {
+            LINKED_LIST_CONNECTION(&d->character_ptr, "object");
+        }
+    }
+    int Id() { return (int)data; }
+    void DrawNode(NodesViewer *viewer) {
+        Character_580 *ptr = (Character_580 *)data;
+        ImGui::Text("Char580: %s", ptr->name);
+        if (show_mem_edit) {
+            mem_edit.DrawContents(data, data_size);
+        } else {
+            ImGui::Text("Int [0]: %i (%08X)", ptr->field0_0x0, ptr->field0_0x0);
+            ImGui::Text("Int [1]: %i (%08X)", ptr->field1_0x4, ptr->field1_0x4);
+            ImGui::Text("Int [2]: %i (%08X)", ptr->field3_0x28, ptr->field3_0x28);
+            ImGui::Text("Int [3]: %i (%08X)", ptr->field4_0x2c, ptr->field4_0x2c);
+            ImGui::Text("Int [4]: %i (%08X)", ptr->field5_0x30, ptr->field5_0x30);
+            ImGui::InputFloat("Unknown float", &ptr->field358_0x1a0);
+        }
+    };
+};
+
 struct ViewLinkedList : public ViewBase {
     ViewLinkedList(NodesViewer *viewer, LinkedList* d) : ViewBase(viewer, d, sizeof(*d)) {
         ID_CONNECTION(&d->container_object_id, "Container");
         ID_CONNECTION(&d->owner_object_id, "Owner");
         LINKED_LIST_CONNECTION(&d->content, "Content");
         SAB_CONNECTION(&d->something_about_building_ptr, "SAB ptr");
-        LINKED_LIST_CONNECTION(&d->next, "Next");
         MEMORY_EDIT_CONNECTION(&d->ptr_to_64_bytes_linked_list, sizeof(UnknownLinkedList64), "LinkedList64");
+        CHARACTER_580_CONNECTION(&d->character_580_ptr, "Char580");
+        LINKED_LIST_CONNECTION(&d->next, "Next");
     }
 
     virtual ~ViewLinkedList() = default;
@@ -529,6 +569,8 @@ bool GetLinkedListPtr(ConnectionV2* c, void** ptr) {
     return *ptr && (!c->view || *ptr == c->view->data) && object->this_object_id > 0;
 }
 bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr) {
+    if (!c->values[0]) return false;
+
     SomethingAboutBuilding* sab = *(SomethingAboutBuilding**)c->values[0];
     *ptr = sab;
 
@@ -617,6 +659,9 @@ ViewBase* CreateIDView(ConnectionV2* c, NodesViewer* viewer, void* ptr) {
 }
 ViewBase* CreateMemoryEditView(ConnectionV2* c, NodesViewer* viewer, void* ptr) {
     return new ViewMemoryEdit(viewer, ptr, (size_t)c->values[1]);
+}
+ViewBase* CreateCharacter580View(ConnectionV2*, NodesViewer* viewer, void* ptr) {
+    return new ViewCharacter580(viewer, (Character_580*)ptr);
 }
 
 void ViewLinkedList::DrawNode(NodesViewer *viewer) {
@@ -847,8 +892,10 @@ ViewSomethingAboutBuilding::ViewSomethingAboutBuilding(NodesViewer *viewer, Some
         LINKED_LIST_CONNECTION(&d->instance_of_any_type_ptr, "object");
     } else if (*d->name == 'g') {
         BUILDING_INSTANCE_CONNECTION(&d->instance_of_any_type_ptr, "building");
-    } else /*== 's'*/ {
+    } else if ((Character *)d->instance_of_any_type_ptr >= g_characters && (Character *)d->instance_of_any_type_ptr < (g_characters + 768)) {
         CHARACTER_CONNECTION(&d->instance_of_any_type_ptr, "character");
+    } else {
+        LINKED_LIST_CONNECTION(&d->instance_of_any_type_ptr, "object");
     }
     SAB_CONNECTION(&d->yet_another_ptr, "Ptr #7");
     MEMORY_EDIT_CONNECTION(&d->light_info, sizeof(LightInfo), "Light Info");
