@@ -102,10 +102,10 @@ struct AhmInfo { /* Whatever it is */
 typedef enum Animal {
     DOG=0,
     CAT=1,
-    UNKNOWN_2=2,
+    ANIMAL_UNKNOWN_2=2,
     COW=3,
     SHEEP=4,
-    UNKNOWN_5=5,
+    ANIMAL_UNKNOWN_5=5,
     PIG=6,
     HORSE=7
 } Animal;
@@ -7680,7 +7680,7 @@ struct LightInfo {
 typedef struct BuildingPrototype BuildingPrototype, *PBuildingPrototype;
 
 typedef enum BuildingType {
-    NONE=0,
+    NULL_BUILDING=0,
     ARBEITERUNTERKUNFT=1,
     HOME=2,
     WELL=3,
@@ -8716,7 +8716,7 @@ struct Character {
 typedef struct CutScene CutScene, *PCutScene;
 
 typedef enum SceneType {
-    NONE=0,
+    NULL_SCENE=0,
     VOTING=1,
     LAW_COURT=2,
     BUILDINGS_RELATED=3,
@@ -9261,7 +9261,7 @@ typedef enum ObjectType {
     IMPROVEMENT_DIFFERENT=6,
     IMPROVEMENT_MONEY_STORAGE=7,
     BOOK=8,
-    CURRENCY=9,
+    CURRENCY_OBJ=9,
     BARREL=10,
     CHAIR=11,
     WEAPON=12,
