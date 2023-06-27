@@ -78,7 +78,7 @@ void InitGlobals() {
     g_char_580_1 = (Character_580*)_G(G_CHAR_580_1);
     g_char_580_2 = (Character_580*)_G(G_CHAR_580_2);
 
-    assert(sizeof(Character_580) == 580);
-    assert(sizeof(ObjectPrototype_65) == 65);
+    static_assert(sizeof(Character_580) == 580);
+    static_assert(sizeof(ObjectPrototype_65) == 65);
 }
 
