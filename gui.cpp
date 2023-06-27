@@ -138,11 +138,17 @@ struct pair_hash {
 };
 
 namespace ImGui {
-bool InputShort(const char* label, unsigned short* v, unsigned short step = 1, unsigned short step_fast = 100, ImGuiInputTextFlags flags = 0)
+bool InputUShort(const char* label, unsigned short* v, unsigned short step = 1, unsigned short step_fast = 100, ImGuiInputTextFlags flags = 0)
 {
     // Hexadecimal input provided as a convenience but the flag name is awkward. Typically you'd use InputText() to parse your own data, if you want to handle prefixes.
     const char* format = (flags & ImGuiInputTextFlags_CharsHexadecimal) ? "%04X" : "%d";
     return InputScalar(label, ImGuiDataType_U16, (void*)v, (void*)(step > 0 ? &step : NULL), (void*)(step_fast > 0 ? &step_fast : NULL), format, flags);
+}
+bool InputShort(const char* label, short* v, short step = 1, short step_fast = 100, ImGuiInputTextFlags flags = 0)
+{
+    // Hexadecimal input provided as a convenience but the flag name is awkward. Typically you'd use InputText() to parse your own data, if you want to handle prefixes.
+    const char* format = (flags & ImGuiInputTextFlags_CharsHexadecimal) ? "%04X" : "%d";
+    return InputScalar(label, ImGuiDataType_S16, (void*)v, (void*)(step > 0 ? &step : NULL), (void*)(step_fast > 0 ? &step_fast : NULL), format, flags);
 }
 
 bool InputByte(const char* label, unsigned char* v, unsigned short step = 1, unsigned short step_fast = 10, ImGuiInputTextFlags flags = 0)
@@ -178,6 +184,7 @@ struct ViewBuildingInstance;
 struct ViewSomethingAboutBuilding;
 struct ViewCharacter580;
 struct ViewMemoryEdit;
+struct ViewProductionInfo;
 struct ConnectionV2;
 
 struct NodesViewer {
@@ -233,6 +240,8 @@ bool GetLinkedListPtr(ConnectionV2* c, void** ptr);
 bool GetSomethingAboutBuildingPtr(ConnectionV2* c, void** ptr);
 bool GetIDPtr(ConnectionV2* c, void** ptr);
 bool GetRawPtr(ConnectionV2* c, void** ptr);
+bool GetProductionByPrototypePtr(ConnectionV2* c, void** ptr);
+
 
 ViewBase *CreateCharacterView(ConnectionV2*, NodesViewer *viewer, void* ptr);
 ViewBase *CreateBuildingInstanceView(ConnectionV2*, NodesViewer* viewer, void* ptr);
@@ -241,6 +250,7 @@ ViewBase *CreateSomethingAboutBuildingView(ConnectionV2*, NodesViewer* viewer, v
 ViewBase *CreateIDView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateMemoryEditView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateCharacter580View(ConnectionV2*, NodesViewer* viewer, void* ptr);
+ViewBase *CreateProductionInfoView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 
 
 struct ViewBase {
@@ -308,12 +318,16 @@ connections_v2.push_back({ {(int)id, 0, 0}, viewer->widget_id--, viewer->widget_
 connections_v2.push_back({ {(int)ptr, (int)size, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetRawPtr, CreateMemoryEditView });
 #define CHARACTER_580_CONNECTION(ptr, name) \
 connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetRawPtr, CreateCharacter580View });
+#define PRODUCTION_INFO_CONNECTION(prot_index, name) \
+connections_v2.push_back({ {(int)prot_index, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetProductionByPrototypePtr, CreateProductionInfoView });
+
 
 
 struct ViewInit : ViewBase {
     int id;
 
     short current_player_index = 1;
+    short production_prot_index = 22;
 
     ViewInit(NodesViewer *viewer, void* d) : ViewBase(viewer, d, 0) {
         id = viewer->widget_id--;
@@ -324,10 +338,14 @@ struct ViewInit : ViewBase {
         CHARACTER_INDEX_CONNECTION(&current_player_index, "Current Player");
         CHARACTER_580_CONNECTION(g_char_580_1, "g_char_580_1");
         CHARACTER_580_CONNECTION(g_char_580_2, "g_char_580_2");
+        PRODUCTION_INFO_CONNECTION(&production_prot_index, "Production info");
     }
 
     virtual ~ViewInit() = default;
     int Id() { return id; }
+    void DrawNode(NodesViewer *viewer) {
+        ImGui::InputShort("Production prototype", &production_prot_index);
+    };
 };
 
 struct ViewMemoryEdit : ViewBase {
@@ -339,6 +357,25 @@ struct ViewMemoryEdit : ViewBase {
     void DrawNode(NodesViewer *viewer) {
         if (show_mem_edit) {
             mem_edit.DrawContents(data, data_size);
+        }
+    };
+};
+
+struct ViewProductionInfo : ViewBase {
+    ViewProductionInfo(NodesViewer *viewer, ProductionInfo* d) : ViewBase(viewer, d, sizeof(*d)) {}
+    int Id() { return (int)data; }
+    void DrawNode(NodesViewer *viewer) {
+        ProductionInfo *ptr = (ProductionInfo *)data;
+        ObjectPrototype_65 *prot = nullptr;
+        if (show_mem_edit) {
+            mem_edit.DrawContents(data, data_size);
+        } else {
+            char buffer[64];
+            ImGui::Text("Production Info (%i)", (int)ptr->building_prot_index);
+            for (int i = 0; i < 10; ++i) {
+                snprintf(buffer, 64, "[%i] %s", i, (*g_objects_prototypes)[ptr->object_prot_indices[i]].name);
+                ImGui::InputShort(buffer, ptr->object_prot_indices + i);
+            }
         }
     };
 };
@@ -612,6 +649,16 @@ bool GetRawPtr(ConnectionV2* c, void** ptr) {
 
     return *ptr && (!c->view || *ptr == c->view->data);
 }
+bool GetProductionByPrototypePtr(ConnectionV2* c, void** ptr) {
+    if (!c->values[0]) return false;
+
+    unsigned char *building_prototype_index = (unsigned char*)c->values[0];
+    if (!building_prototype_index) return false;
+
+    *ptr = GetProductionInfo((BuildingInstance *)building_prototype_index);
+
+    return *ptr && (!c->view || *ptr == c->view->data);
+}
 ViewBase *CreateCharacterView(ConnectionV2*, NodesViewer *viewer, void* ptr) {
     return new ViewCharacter(viewer, (Character *)ptr);
 }
@@ -642,6 +689,9 @@ ViewBase* CreateMemoryEditView(ConnectionV2* c, NodesViewer* viewer, void* ptr) 
 }
 ViewBase* CreateCharacter580View(ConnectionV2*, NodesViewer* viewer, void* ptr) {
     return new ViewCharacter580(viewer, (Character_580*)ptr);
+}
+ViewBase* CreateProductionInfoView(ConnectionV2*, NodesViewer* viewer, void* ptr) {
+    return new ViewProductionInfo(viewer, (ProductionInfo*)ptr);
 }
 
 void ViewLinkedList::DrawNode(NodesViewer *viewer) {
@@ -706,7 +756,7 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
     if (show_mem_edit) {
         mem_edit.DrawContents(data, data_size);
     } else {
-        ImGui::InputShort("Prototype index", &node->object_prot_index, 1);
+        ImGui::InputUShort("Prototype index", &node->object_prot_index, 1);
         if (prototype->type == 9) {
             ImGui::InputInt("Count", &node->count, 32);
         } else if (is_item) {
@@ -735,7 +785,7 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
             ImGui::SliderByte("Raw material cells", &node->time_1, 1, 8);
             ImGui::SliderByte("Production cells", &node->time_2, 1, 8);
         } else {
-            ImGui::InputShort("Time as 2 bytes)", (unsigned short *)&node->time_1, 1);
+            ImGui::InputUShort("Time as 2 bytes)", (unsigned short *)&node->time_1, 1);
             ImGui::InputByte("Time byte #1", &node->time_1, 1);
             ImGui::InputByte("Time byte #2", &node->time_2, 1);
         }

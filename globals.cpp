@@ -1,3 +1,4 @@
+#include "stdio.h"
 #include "globals.h"
 
 size_t g_globals[GLOBALS_SIZE][LANG_SIZE] = {
@@ -17,8 +18,8 @@ size_t g_globals[GLOBALS_SIZE][LANG_SIZE] = {
     /*[G_CURRENT_ROOM_PTR] = */                     { 0x007746cc, 0x0071d7e8 },
     /*[G_CHAR_580_1] = */                           { 0x014d0020, 0x01474f20 },
     /*[G_CHAR_580_2] = */                           { 0x01551f40, 0x014f6e60 },
-    /*G_BAD_SAB_POINTERS_START = */                 { 0x01040640, 0x00fe5a80 },
-    /*G_BAD_SAB_POINTERS_END = */                   { 0x0067a370, 0x00624f50 },
+    /*[G_BAD_SAB_POINTERS_START] = */               { 0x01040640, 0x00fe5a80 },
+    /*[G_BAD_SAB_POINTERS_END] = */                 { 0x0067a370, 0x00624f50 },
 };
 
 LANG g_lang;
@@ -76,5 +77,8 @@ void InitGlobals() {
     g_current_room_ptr = (LinkedList**)_G(G_CURRENT_ROOM_PTR);
     g_char_580_1 = (Character_580*)_G(G_CHAR_580_1);
     g_char_580_2 = (Character_580*)_G(G_CHAR_580_2);
+
+    assert(sizeof(Character_580) == 580);
+    assert(sizeof(ObjectPrototype_65) == 65);
 }
 

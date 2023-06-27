@@ -1,5 +1,3 @@
-#include "stdio.h"
-
 typedef unsigned char   undefined;
 
 /*
@@ -9259,7 +9257,7 @@ struct Handlung {
 
 typedef struct ObjectPrototype_65 ObjectPrototype_65, *PObjectPrototype_65;
 
-typedef enum ObjectType {
+typedef enum ObjectType:char {
     IMPROVEMENT_0=0,
     IMPROVEMENT_FIRE=1,
     IMPROVEMENT_HOME_ROOM=2,
