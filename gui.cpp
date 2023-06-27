@@ -350,10 +350,10 @@ struct ViewCharacter580 : ViewBase {
         SAB_CONNECTION(d->ptr_2/*it's a pointer to a pointer*/, "SAB #2");
         SAB_CONNECTION(&d->ptr_3, "SAB #3");
 
-        if (d->character_ptr >= g_characters && d->character_ptr < (g_characters + 768)) {
-            CHARACTER_CONNECTION(&d->character_ptr, "character");
+        if ((Character *)d->instance_of_any_type_ptr >= g_characters && (Character *)d->instance_of_any_type_ptr < (g_characters + 768)) {
+            CHARACTER_CONNECTION(&d->instance_of_any_type_ptr, "character");
         } else {
-            LINKED_LIST_CONNECTION(&d->character_ptr, "object");
+            LINKED_LIST_CONNECTION(&d->instance_of_any_type_ptr, "object");
         }
     }
     int Id() { return (int)data; }
@@ -368,7 +368,7 @@ struct ViewCharacter580 : ViewBase {
             ImGui::Text("Int [2]: %i (%08X)", ptr->field3_0x28, ptr->field3_0x28);
             ImGui::Text("Int [3]: %i (%08X)", ptr->field4_0x2c, ptr->field4_0x2c);
             ImGui::Text("Int [4]: %i (%08X)", ptr->field5_0x30, ptr->field5_0x30);
-            ImGui::InputFloat("Unknown float", &ptr->field358_0x1a0);
+            ImGui::InputFloat("Unknown float", &ptr->field344_0x1a0);
         }
     };
 };
@@ -393,8 +393,8 @@ struct ViewCharacter : public ViewBase {
     virtual ~ViewCharacter() = default;
 
     ViewCharacter(NodesViewer *viewer, Character* d) : ViewBase(viewer, d, sizeof(*d)) {
-        ID_CONNECTION(&d->object_id, "Some object");
-        ID_CONNECTION(&d->another_object_id, "Another object");
+        ID_CONNECTION(&d->object_id, "Self");
+        ID_CONNECTION(&d->character_id_birth_related, "Some character");
         LINKED_LIST_CONNECTION(&d->inventory, "Inventory");
         BUILDING_INSTANCE_CONNECTION(&d->maybe_home, "Home");
     }
@@ -794,7 +794,7 @@ void ViewCharacter::DrawNode(NodesViewer *viewer) {
         ImGui::Text("Index: %i", character->index);
         ImGui::SliderInt("Action Points", &character->action_points, 1, 50);
         ImGui::Text("Object ID: %i", character->object_id);
-        ImGui::Text("Another object ID: %i", character->another_object_id);
+        ImGui::Text("Another character ID: %i", character->character_id_birth_related);
         if (character->playermode == 1) {
             ImGui::Text("Master budget: %i", character->master_budget / 32);
         }
@@ -817,7 +817,7 @@ void ViewCharacter::DrawNode(NodesViewer *viewer) {
 
 ViewBuildingInstance::ViewBuildingInstance(NodesViewer *viewer, BuildingInstance* d) : ViewBase(viewer, d, sizeof(*d))
 {
-    ID_CONNECTION(&d->character_object_id, "Some character");
+    MEMORY_EDIT_CONNECTION(&d->ahm_info, sizeof(AhmInfo), "Ahm Info");
     LINKED_LIST_CONNECTION(&d->building_content, "Content");
     CHARACTER_INDEX_CONNECTION(&d->character_index_1, "Character #1");
     CHARACTER_INDEX_CONNECTION(&d->character_index_2, "Character #2");
@@ -836,7 +836,6 @@ void ViewBuildingInstance::DrawNode(NodesViewer *viewer) {
         mem_edit.DrawContents(data, data_size);
     } else {
         ImGui::Text("Current Room Prototype: %i", (int)node->current_room_prot_index);
-        ImGui::Text("Character ID: %i", node->character_object_id);
 
         /*
         ImGui::Text("int #01: %X (%i)", node->field6_0x2b,  node->field6_0x2b);
