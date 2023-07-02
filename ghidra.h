@@ -44,7 +44,7 @@ union __LinkedListUnion {
 
 typedef struct AhmInfo AhmInfo, *PAhmInfo;
 
-typedef enum OBJECT_PROTOTYPE {
+typedef enum OBJECT_PROTOTYPE:short {
     OBJ_NULL=0,
     OBJ_KANALISATION=1,
     OBJ_BRENNESSELN=2,
@@ -848,7 +848,7 @@ typedef enum Animal {
 
 typedef struct BuildingInstance BuildingInstance, *PBuildingInstance;
 
-typedef enum BUILDING_PROTOTYPE {
+typedef enum BUILDING_PROTOTYPE:char {
     GEB_NULL=0,
     GEB_ARBEITERUNTERKUNFT=1,
     GEB_ARBEITERUNTERKUNFT_MITTEL=2,
@@ -8517,7 +8517,7 @@ typedef enum BuildingKind {
 
 typedef struct BuildingPrototype BuildingPrototype, *PBuildingPrototype;
 
-typedef enum BuildingType {
+typedef enum BuildingType:char {
     NULL_BUILDING=0,
     ARBEITERUNTERKUNFT=1,
     HOME=2,
@@ -9117,7 +9117,7 @@ struct BuildingPrototype {
 
 typedef struct Character Character, *PCharacter;
 
-typedef enum PlayerMode {
+typedef enum PlayerMode:char {
     UNKNOWN_0=0,
     MASTER=1,
     UNKNOWN_2=2,
@@ -9845,7 +9845,7 @@ struct Handlung {
 
 typedef struct CutScene CutScene, *PCutScene;
 
-typedef enum SceneType {
+typedef enum SceneType:char {
     NULL_SCENE=0,
     VOTING=1,
     LAW_COURT=2,
@@ -10063,7 +10063,7 @@ struct CutScene {
 
 typedef struct MaterialPriceInfo MaterialPriceInfo, *PMaterialPriceInfo;
 
-typedef enum OBJECT_PROTOTYPE_4 {
+typedef enum OBJECT_PROTOTYPE_4:long {
     OBJ_NULL=0,
     OBJ_KANALISATION=1,
     OBJ_BRENNESSELN=2,
