@@ -460,6 +460,7 @@ struct ViewCharacter : public ViewBase {
 
     ViewCharacter(NodesViewer *viewer, Character* d) : ViewBase(viewer, d, sizeof(*d)) {
         ID_CONNECTION(&d->object_id, "Self");
+        CHARACTER_580_CONNECTION(&d->char_580_1, "Handle");
         ID_CONNECTION(d->children_maybe + 0, "Husband or Wife");
         ID_CONNECTION(d->children_maybe + 1, "Father");
         ID_CONNECTION(d->children_maybe + 2, "Mother");
