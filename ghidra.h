@@ -26,77 +26,807 @@ typedef struct __LinkedListTime __LinkedListTime, *P__LinkedListTime;
 struct __LinkedListTime {
     byte time_1;
     byte time_2;
-    undefined1 maybe_unused_1;
-    undefined1 maybe_unsused_2;
+    ushort character_id_for_action;
 };
 
 typedef union __LinkedListUnion __LinkedListUnion, *P__LinkedListUnion;
 
 union __LinkedListUnion {
-    int object_id;
+    undefined4 building_id_or_kind;
     struct __LinkedListTime time;
 };
 
 typedef struct AhmInfo AhmInfo, *PAhmInfo;
 
+typedef enum OBJECT_PROTOTYPE {
+    OBJ_NULL=0,
+    OBJ_KANALISATION=1,
+    OBJ_BRENNESSELN=2,
+    OBJ_EISENTUER=3,
+    OBJ_OFFENES_FEUER=4,
+    OBJ_KAMIN=5,
+    OBJ_VERTAEFELUNG=6,
+    OBJ_TAPETEN=7,
+    OBJ_PORTAL=8,
+    OBJ_SEKRETARIAT=9,
+    OBJ_WINTERGARTEN=10,
+    OBJ_PERSONALTRAKT=11,
+    OBJ_EINFRIEDUNG=12,
+    OBJ_RASEN=13,
+    OBJ_HECKEN=14,
+    OBJ_STATUEN=15,
+    OBJ_SPRINGBRUNNEN=16,
+    OBJ_PAVILLON=17,
+    OBJ_WOHN_UND_SCHLAFRAUM=18,
+    OBJ_ARBEITSZIMMER=19,
+    OBJ_HINTERZIMMER=20,
+    OBJ_BIBLIOTHEK=21,
+    OBJ_WEINKELLER=22,
+    OBJ_SALON=23,
+    OBJ_MUSIKZIMMER=24,
+    OBJ_STROHMATTE=25,
+    OBJ_HOLZBETT=26,
+    OBJ_SCHREIBPULT=27,
+    OBJ_KERZE=28,
+    OBJ_OELLAMPE=29,
+    OBJ_SCRIPTORIUMSLEUCHTER=30,
+    OBJ_LAGERHAUS_ARBEITSRAUM=31,
+    OBJ_FLASCHENZUG=32,
+    OBJ_PEITSCHE=33,
+    OBJ_STOCK_MIT_KAROTTE=34,
+    OBJ_DEICHSEL_EINSPAENNIG=35,
+    OBJ_DEICHSEL_ZWEISPAENNIG=36,
+    OBJ_DEICHSEL_VIERSPAENNIG=37,
+    OBJ_AXTSTAENDER=38,
+    OBJ_SAEGEWERK=39,
+    OBJ_WURZELHACKE=40,
+    OBJ_ZWEIMANNSAEGE=41,
+    OBJ_LAGERFLAECHE=42,
+    OBJ_PLANE=43,
+    OBJ_ARBEITERHUETTE=44,
+    OBJ_VORARBEITERHUETTE=45,
+    OBJ_GELDSCHRANK=46,
+    OBJ_STEINKARRE=47,
+    OBJ_BAUGERUEST=48,
+    OBJ_HEBEKRAN=49,
+    OBJ_PERSONALBUCH=50,
+    OBJ_SOELDNERHUETTE=51,
+    OBJ_ZIELSCHEIBE=52,
+    OBJ_STROHPUPPE=53,
+    OBJ_GRUBENBELEUCHTUNG=54,
+    OBJ_MINENSTOLLEN=55,
+    OBJ_STUETZBALKEN=56,
+    OBJ_GRUBENHUNDEKAEFIG=57,
+    OBJ_LORE=58,
+    OBJ_ZIEGELFORM=59,
+    OBJ_ZIEGELBRENNOFEN=60,
+    OBJ_KOELNISCHE_MARK=61,
+    OBJ_TALER=62,
+    OBJ_GULDEN=63,
+    OBJ_DUKAT=64,
+    OBJ_PFUND_PFENNIGE=65,
+    OBJ_LIVRE_TOURNOIS=66,
+    OBJ_FRANC=67,
+    OBJ_MARK_LUEBISCH=68,
+    OBJ_PFUND=69,
+    OBJ_FLORINT=70,
+    OBJ_SOVEREIGN=71,
+    OBJ_UNITE=72,
+    OBJ_GUINEE=73,
+    OBJ_LIRA_GROSSORUM=74,
+    OBJ_VENEZISCHER_DUKAT=75,
+    OBJ_DOLLAR=76,
+    OBJ_DIEBESGILDE_GANGSYSTEM=77,
+    OBJ_ABSTUETZBALKEN=78,
+    OBJ_VERMAUERUNG=79,
+    OBJ_HORCHPOSTEN=80,
+    OBJ_TAEUSCHUNGS_TRUHE=81,
+    OBJ_ILLUSIONSWAND=82,
+    OBJ_FALLE=83,
+    OBJ_DIEBESGILDE_AUFENTHALTSRAUM=84,
+    OBJ_WEINFASS=85,
+    OBJ_LAGERFEUER=86,
+    OBJ_VORHANG_FUER_CHEF=87,
+    OBJ_MITARBEITER_DES_MONATS=88,
+    OBJ_SEKRETAER_AUFSATZ=89,
+    OBJ_DIEBES_BRIEFPAPIER=90,
+    OBJ_INFORMATIONSPERGAMENT=91,
+    OBJ_DIEBESGILDE_LAGERRAUM=92,
+    OBJ_INNENRAUM_BRUNNEN=93,
+    OBJ_HEILBRUNNEN=94,
+    OBJ_SCHATZTRUHE=95,
+    OBJ_DIEBESGILDE_TRAININGSRAUM=96,
+    OBJ_KUGEL_UND_PULVER_SAECKCHEN=97,
+    OBJ_PULVERFASS=98,
+    OBJ_KOSTUEMTRUHE=99,
+    OBJ_REGAL_GEDICHTBAENDE=100,
+    OBJ_DIEBESGILDE_GEFAENGNIS=101,
+    OBJ_PATRIZIERBETT=102,
+    OBJ_WACHTISCH=103,
+    OBJ_GITTER=104,
+    OBJ_KETTENFESSEL=105,
+    OBJ_FELDBETT=106,
+    OBJ_WASCHSCHUESSEL=107,
+    OBJ_FLUCHTGANG=108,
+    OBJ_MEISTERBRIEF=109,
+    OBJ_STROHLAGER=110,
+    OBJ_SCHILD_DIEBESGILDE=111,
+    OBJ_SCHILD_GEFAENGNIS=112,
+    OBJ_SCHILD_LAGERHAUS=113,
+    OBJ_SCHILD_STADTWACHE=114,
+    OBJ_SCHILD_SCHMIEDE=115,
+    OBJ_SCHMIEDE_ARBEITSRAUM=116,
+    OBJ_AMBOSS=117,
+    OBJ_SCHMIEDEHAMMER=118,
+    OBJ_ESSE=119,
+    OBJ_WASSERBOTTICH=120,
+    OBJ_SCHUERZE=121,
+    OBJ_ZANGE=122,
+    OBJ_GUSSFORM=123,
+    OBJ_GIESSKELLE=124,
+    OBJ_ENTGRATER=125,
+    OBJ_BESEN=126,
+    OBJ_BLASEBALG=127,
+    OBJ_SCHMIEDEOFEN=128,
+    OBJ_EISENSCHWAMM=129,
+    OBJ_EISENSCHNEIDER=130,
+    OBJ_VERSIEGELER=131,
+    OBJ_SCHILD_TISCHLER=132,
+    OBJ_TISCHLEREI_ARBEITSRAUM=133,
+    OBJ_MESSER=134,
+    OBJ_TISCHLERHAMMER=135,
+    OBJ_SAEGE=136,
+    OBJ_HOBEL=137,
+    OBJ_LEIMTOPF=138,
+    OBJ_SCHRAUBZWINGE=139,
+    OBJ_HOBELBANK=140,
+    OBJ_ZOLLSTOCK=141,
+    OBJ_LOT=142,
+    OBJ_FEILE=143,
+    OBJ_MECHANISCHE_SAEGE=144,
+    OBJ_MARKTPLATZ_ARBEITSRAUM=145,
+    OBJ_MARKTSTAND_TISCHLER_SCHMIEDE=146,
+    OBJ_MARKTSTAND_STEINMETZ_WIRT=147,
+    OBJ_MARKTSTAND_PARFUM_KRAEUTER=148,
+    OBJ_MARKTSTAND_ROHSTOFFE=149,
+    OBJ_MARKTSTAND_IMPORTEUR=150,
+    OBJ_MARKTSTAND_KIRCHE=151,
+    OBJ_SCHWARZES_BRETT=152,
+    OBJ_TRIBUENE=153,
+    OBJ_SCHILD_STEINMETZ=154,
+    OBJ_STEINMETZ_ARBEITSRAUM=155,
+    OBJ_HAMMER_UND_MEISSEL=156,
+    OBJ_MAURERKELLE=157,
+    OBJ_LEITER=158,
+    OBJ_WASSEREIMER=159,
+    OBJ_SCHUBKARRE=160,
+    OBJ_EISENBUERSTE=161,
+    OBJ_DRAHTSAEGE=162,
+    OBJ_KUEHLZUFLUSS=163,
+    OBJ_SCHILD_GELDLEIHE=164,
+    OBJ_GELDLEIHE_ARBEITSRAUM=165,
+    OBJ_FENSTERGITTER=166,
+    OBJ_GARDINE=167,
+    OBJ_BESUCHERSTUHL=168,
+    OBJ_BESUCHERSESSEL=169,
+    OBJ_WEINFLASCHE_UND_GLAESER=170,
+    OBJ_KASSE=171,
+    OBJ_EISENSCHRANK=172,
+    OBJ_WANDGEMAELDE=173,
+    OBJ_RICHTSCHWERT=174,
+    OBJ_RICHTAXT=175,
+    OBJ_GALGEN=176,
+    OBJ_KREUZ=177,
+    OBJ_SCHEITERHAUFEN=178,
+    OBJ_EXEKUTIONSKANONE=179,
+    OBJ_GUILLOTINE=180,
+    OBJ_LOGE=181,
+    OBJ_WAAGE=182,
+    OBJ_GEFAENGNIS_WACHRAUM=183,
+    OBJ_GEFANGENENLITERATUR=184,
+    OBJ_KERKERPLAN=185,
+    OBJ_GEFAENGNIS_ZELLE=186,
+    OBJ_GEFAENGNIS_FOLTERKAMMER=187,
+    OBJ_DAUMENSCHRAUBEN=188,
+    OBJ_SPANISCHE_STIEFEL=189,
+    OBJ_NEUNSCHWAENZIGE_PEITSCHE=190,
+    OBJ_ESSE_UND_BRANDEISEN=191,
+    OBJ_EISWASSERTROPFER=192,
+    OBJ_HAENGENDER_KAEFIG=193,
+    OBJ_STRECKBANK=194,
+    OBJ_BRUNNENEIMER_NORMAL=195,
+    OBJ_BRUNNENEIMER_EISEN=196,
+    OBJ_SCHWEINEMAGEN=197,
+    OBJ_KUHMAGEN=198,
+    OBJ_BRUNNENSEIL=199,
+    OBJ_BRUNNENKETTE=200,
+    OBJ_HEILIGENFIGUR=201,
+    OBJ_WEIHPLAKETTE_1=202,
+    OBJ_WEIHPLAKETTE_2=203,
+    OBJ_WEIHPLAKETTE_3=204,
+    OBJ_WEIHPLAKETTE_4=205,
+    OBJ_SCHILD_KRAEUTERLADEN=206,
+    OBJ_KRAEUTERLADEN_ARBEITSRAUM=207,
+    OBJ_KRAEUTERREGAL=208,
+    OBJ_SCHWERER_VORHANG=209,
+    OBJ_MEDIZINFAESSCHEN=210,
+    OBJ_VITRINE=211,
+    OBJ_TROCKENBUCH=212,
+    OBJ_MOERSER_UND_STEMPEL=213,
+    OBJ_KRAEUTERLADEN_LABOR=214,
+    OBJ_GIFTFAESSCHEN=215,
+    OBJ_SCHRAUBPRESSE=216,
+    OBJ_SUDERHITZER=217,
+    OBJ_CHEMIKALIENKASTEN=218,
+    OBJ_DESTILLIERKOLBEN=219,
+    OBJ_GEHEIMFACH=220,
+    OBJ_KRAEUTERLADEN_MODRIGER_KELLER=221,
+    OBJ_TEICH=222,
+    OBJ_FLIEGENGLAS=223,
+    OBJ_KLOAKENZUGANG=224,
+    OBJ_PILZKULTUR=225,
+    OBJ_DACHBALKEN=226,
+    OBJ_TERRARIUM=227,
+    OBJ_SCHILD_KIRCHE=228,
+    OBJ_KIRCHE_ARBEITSRAUM=229,
+    OBJ_KATHEDRALE_ARBEITSRAUM=230,
+    OBJ_KIRCHENKREUZ=231,
+    OBJ_SPENDENKAESTCHEN=232,
+    OBJ_WEIHWASSERBECKEN=233,
+    OBJ_HOLZBANK=234,
+    OBJ_POLSTERBANK=235,
+    OBJ_KANZEL=236,
+    OBJ_ALTAR=237,
+    OBJ_ORGEL=238,
+    OBJ_LICHTGADEN=239,
+    OBJ_KIRCHE_ALTARRAUM=240,
+    OBJ_MARIENBILD=241,
+    OBJ_KIRCHE_BEICHTSTUHLRAUM=242,
+    OBJ_KIRCHE_GLOCKENTURMRAUM=243,
+    OBJ_GLOCKE=244,
+    OBJ_EISENAUFHAENGUNG=245,
+    OBJ_GROSSE_GLOCKE=246,
+    OBJ_KIRCHE_SCRIPTORIUM=247,
+    OBJ_BUCHVITRINE=248,
+    OBJ_FARBENKASTEN=249,
+    OBJ_SETZKASTEN=250,
+    OBJ_MUSTERBUCH=251,
+    OBJ_DRUCKERPRESSE=252,
+    OBJ_AUSSEN_RAUM=253,
+    OBJ_ROHSTOFFVORKOMMEN=254,
+    OBJ_POTENTIAL=255,
+    OBJ_WILDSCHWEINSPIESS=256,
+    OBJ_RUMFASS=257,
+    OBJ_AUSGUCK=258,
+    OBJ_TARNUNG_ABZWEIGUNG=259,
+    OBJ_TARNUNG_TORBOGEN=260,
+    OBJ_ABWEHRSTELLUNG=261,
+    OBJ_AUSGUCK_UPGRADE=262,
+    OBJ_CHEFZELT=263,
+    OBJ_MASKE_DES_ZORRO=264,
+    OBJ_RAEUBERZELT=265,
+    OBJ_FLUCHTHUETTE=266,
+    OBJ_FLUCHTSEIL=267,
+    OBJ_SPROSSEN=268,
+    OBJ_RUTSCHE=269,
+    OBJ_RATHAUS_HALLE=270,
+    OBJ_MARMORWAPPEN=271,
+    OBJ_RATHAUS_SEKRETARIAT=272,
+    OBJ_GESETZBUCH_STRAFRECHT=273,
+    OBJ_GESETZBUCH_STEUERN=274,
+    OBJ_GESETZBUCH_VERFASSUNG=275,
+    OBJ_RATHAUS_SITZUNGSSAAL=276,
+    OBJ_STADTKASSE=277,
+    OBJ_LAGERFLAECHE_ALLGEMEIN=278,
+    OBJ_SCHILD_PARFUMEUR=279,
+    OBJ_PARFUMERIE_ARBEITSRAUM=280,
+    OBJ_PARFUMREGAL=281,
+    OBJ_MISCHGEFAESS=282,
+    OBJ_MESSBECHER=283,
+    OBJ_MOERSER=284,
+    OBJ_SPATEL=285,
+    OBJ_PIPETTE=286,
+    OBJ_SCHILD_WIRTSHAUS=287,
+    OBJ_WIRTSHAUS_ARBEITSRAUM=288,
+    OBJ_URKUNDE_SCHANKRECHT=289,
+    OBJ_URKUNDE_BRAURECHT=290,
+    OBJ_URKUNDE_DESTILLIERRECHT=291,
+    OBJ_LANGE_TISCHE=292,
+    OBJ_EINZELTISCHE=293,
+    OBJ_STUEHLE=294,
+    OBJ_SCHOENE_STUEHLE=295,
+    OBJ_HOLZGESCHIRR=296,
+    OBJ_EISENGESCHIRR=297,
+    OBJ_SILBERGESCHIRR=298,
+    OBJ_SPIELTISCH=299,
+    OBJ_DUNKLE_ECKE=300,
+    OBJ_STAMMTISCH=301,
+    OBJ_WIRTSHAUS_KELLER=302,
+    OBJ_BIERFASS=303,
+    OBJ_WEINREGAL=304,
+    OBJ_SCHNAPPSFAESSCHEN=305,
+    OBJ_BRAUANLAGE=306,
+    OBJ_DESTILLIERANLAGE=307,
+    OBJ_KARREN=308,
+    OBJ_KARREN_MITTEL=309,
+    OBJ_KARREN_GROSS=310,
+    OBJ_ZUNFTHAUS_HALLE=311,
+    OBJ_ZUNFTHAUS_SEKRETARIAT=312,
+    OBJ_ZUNFTHAUS_SITZUNGSSAAL=313,
+    OBJ_ZUNFTWAPPEN_PARFUMEURE=314,
+    OBJ_ZUNFTWAPPEN_SCHMIEDE=315,
+    OBJ_ZUNFTWAPPEN_STEINMETZ=316,
+    OBJ_ZUNFTWAPPEN_TISCHLER=317,
+    OBJ_ROTER_TEPPICH=318,
+    OBJ_SAEULEN=319,
+    OBJ_KARTENTISCH=320,
+    OBJ_GESETZ=321,
+    OBJ_ZUNFTKASSE=322,
+    OBJ_ZUNFTVITRINE=323,
+    OBJ_ZUNFTMEISTERBILD=324,
+    OBJ_STADTWACHE_MANNSCHAFTSRAUM=325,
+    OBJ_STADTWACHE_WACHZIMMER=326,
+    OBJ_ZOLLKASSE=327,
+    OBJ_ZOLLKASSE_MIT_GEHEIMFACH=328,
+    OBJ_SCHLACHTENGEMAELDE=329,
+    OBJ_WACHPLAN=330,
+    OBJ_SCHNAPPSVORRAT=331,
+    OBJ_STADTWACHE_WAFFENKAMMER=332,
+    OBJ_SCHWERTERREGAL=333,
+    OBJ_PISTOLENREGAL=334,
+    OBJ_KUGELSAECKCHEN=335,
+    OBJ_PULVERFASS_2=336,
+    OBJ_KANONENKUGELKISTE=337,
+    OBJ_KANONENHALTERUNG=338,
+    OBJ_GITTERSTANGEN_FENSTER=339,
+    OBJ_DOLCH=340,
+    OBJ_SILBERRING=341,
+    OBJ_RAPIER=342,
+    OBJ_SILBERKETTE=343,
+    OBJ_GROSSSCHWERT=344,
+    OBJ_GOLDKETTE=345,
+    OBJ_GUERTEL_DER_METAPHYSIK=346,
+    OBJ_GEHSTOCK=347,
+    OBJ_SCHUTZKREUZ=348,
+    OBJ_KAMM=349,
+    OBJ_PISTOLE=350,
+    OBJ_STAB_DES_EDELMANNS=351,
+    OBJ_ARMBRUST=352,
+    OBJ_SCHLEIFSTEIN=353,
+    OBJ_STEINKREISEL=354,
+    OBJ_STEINSOLDAT=355,
+    OBJ_SCHIEFERTAFEL=356,
+    OBJ_DIAMANT=357,
+    OBJ_GLUECKSSTEIN=358,
+    OBJ_GEDICHT=359,
+    OBJ_UEBER_TALENTE_I=360,
+    OBJ_HASSTIRADE=361,
+    OBJ_BRIEF_AUS_ROM=362,
+    OBJ_LAGERPLAN=363,
+    OBJ_UEBER_TALENTE_II=364,
+    OBJ_BLUME_DER_ZWIETRACHT=365,
+    OBJ_GIFTDOLCH=366,
+    OBJ_DARTAGNANS_DUFT=367,
+    OBJ_MOSCHUSDUFT=368,
+    OBJ_HEILGENDUFT=369,
+    OBJ_SCHATTENDOLCH=370,
+    OBJ_AUSDAUERTRANK=371,
+    OBJ_BOMBE=372,
+    OBJ_LEBENSELEXIR=373,
+    OBJ_TOPFGRANATE=374,
+    OBJ_KROETENSCHLEIM=375,
+    OBJ_UNKENDUNK=376,
+    OBJ_KOERNERMAHZEIT=377,
+    OBJ_DUENNBIER=378,
+    OBJ_STARKBIER=379,
+    OBJ_FAHNENBRAEU_PILSENER=380,
+    OBJ_SCHAEDELBRAND=381,
+    OBJ_KRAEUTERSCHNAPPS=382,
+    OBJ_VERHANDELN_MUENZE=383,
+    OBJ_VERHANDELN_MUENZSTAPEL=384,
+    OBJ_VERHANDELN_LEDERBEUTEL=385,
+    OBJ_VERHANDELN_DICKER_LEDERBEUTEL=386,
+    OBJ_VERHANDELN_EINFACHE_SCHATULLE=387,
+    OBJ_VERHANDELN_EDELSTEIN_SCHATULLE=388,
+    OBJ_HANDWERK_EINFACHER_HAMMER=389,
+    OBJ_HANDWERK_HOLZLINEAL=390,
+    OBJ_HANDWERK_LOT=391,
+    OBJ_HANDWERK_SCHOENE_WAAGE=392,
+    OBJ_HANDWERK_EDLE_BAUSKIZZE=393,
+    OBJ_HANDWERK_VERZIERTER_ZIRKEL=394,
+    OBJ_BNUN_SONNENSCHEIN=395,
+    OBJ_BNUN_NACHMITTAG=396,
+    OBJ_BNUN_DAEMMERUNG=397,
+    OBJ_BNUN_REGEN_DAEMMERUNG=398,
+    OBJ_BNUN_NACHT=399,
+    OBJ_BNUN_GEWITTER_NACHT=400,
+    OBJ_KAMPF_ROSTIGES_MESSER=401,
+    OBJ_KAMPF_DOLCH=402,
+    OBJ_KAMPF_VERZIERTER_DOLCH=403,
+    OBJ_KAMPF_EINFACHES_SCHWERT=404,
+    OBJ_KAMPF_VERZIERTER_RAPIER=405,
+    OBJ_KAMPF_RAPIER_EDELSTEIN=406,
+    OBJ_RHETORIK_NIEMAND=407,
+    OBJ_RHETORIK_EIN=408,
+    OBJ_RHETORIK_DREI=409,
+    OBJ_RHETORIK_EINIGE=410,
+    OBJ_RHETORIK_VIELE=411,
+    OBJ_RHETORIK_MASSEN=412,
+    OBJ_TALENTBUCH_VERHANDELN_1=413,
+    OBJ_TALENTBUCH_VERHANDELN_2=414,
+    OBJ_TALENTBUCH_VERHANDELN_3=415,
+    OBJ_TALENTBUCH_HANDWERK_1=416,
+    OBJ_TALENTBUCH_HANDWERK_2=417,
+    OBJ_TALENTBUCH_HANDWERK_3=418,
+    OBJ_TALENTBUCH_BNUN_1=419,
+    OBJ_TALENTBUCH_BNUN_2=420,
+    OBJ_TALENTBUCH_BNUN_3=421,
+    OBJ_TALENTBUCH_KAMPF_1=422,
+    OBJ_TALENTBUCH_KAMPF_2=423,
+    OBJ_TALENTBUCH_KAMPF_3=424,
+    OBJ_TALENTBUCH_RHETORIK_1=425,
+    OBJ_TALENTBUCH_RHETORIK_2=426,
+    OBJ_TALENTBUCH_RHETORIK_3=427,
+    OBJ_AMTSTRAEGER=428,
+    OBJ_RAT=429,
+    OBJ_GESETZ_AENDERN=430,
+    OBJ_MITGLIED_ANKLAGEN=431,
+    OBJ_MITGLIED_ABSETZEN=432,
+    OBJ_AMT_NIEDERLEGEN=433,
+    OBJ_AUSSCHUETTUNG_VORNEHMEN=434,
+    OBJ_FREIES_AMT=435,
+    OBJ_BEWERBUNG_AMT=436,
+    OBJ_THEMA_PREDIGT=437,
+    OBJ_MANUSKRIPT=438,
+    OBJ_KIEFER=439,
+    OBJ_BUCHE=440,
+    OBJ_EICHE=441,
+    OBJ_LEHM=442,
+    OBJ_GRANIT_ROH=443,
+    OBJ_SCHIEFER_ROH=444,
+    OBJ_EISENERZ_ROH=445,
+    OBJ_SILBERERZ_ROH=446,
+    OBJ_GOLDERZ_ROH=447,
+    OBJ_EDELSTEINE_ROH=448,
+    OBJ_KROETENAUGE=449,
+    OBJ_FLEDERMAUSBLUT=450,
+    OBJ_SPINNENBEIN=451,
+    OBJ_LAVENDEL=452,
+    OBJ_JASMIN=453,
+    OBJ_ROSE=454,
+    OBJ_MOSCHUS=455,
+    OBJ_GERSTE=456,
+    OBJ_ROGGEN=457,
+    OBJ_KIEFERNBRETT=458,
+    OBJ_BUCHENBRETT=459,
+    OBJ_EICHENBRETT=460,
+    OBJ_ZIEGEL=461,
+    OBJ_GRANIT=462,
+    OBJ_SCHIEFER=463,
+    OBJ_EISEN=464,
+    OBJ_SILBER=465,
+    OBJ_GOLD=466,
+    OBJ_EDELSTEIN=467,
+    OBJ_BESCHLAG=468,
+    OBJ_ZAPFEN=469,
+    OBJ_SCHLEIFPAPIER=470,
+    OBJ_POLITUR=471,
+    OBJ_FARBE=472,
+    OBJ_WEINGEIST=473,
+    OBJ_PAPIER=474,
+    OBJ_IMPORTLAGER=475,
+    OBJ_EXPORTLAGER=476,
+    OBJ_LAGERFLAECHE_TRANSPORT=477,
+    OBJ_STOLPERSEIL=478,
+    OBJ_FENSTERLAEDEN=479,
+    OBJ_DORNENHECKE=480,
+    OBJ_ROSENSTRAUCH=481,
+    OBJ_FALLGRUBE=482,
+    OBJ_ROSTNAEGEL=483,
+    OBJ_TUERRIEGEL=484,
+    OBJ_VERGISSMICH_KRAUT=485,
+    OBJ_DUFT_DER_WEITEN_WELT=486,
+    OBJ_HELLEBARDE_UND_SCHEMEL=487,
+    OBJ_HOLZSPLITTER=488,
+    OBJ_INSTABILE_STEINHAUFEN=489,
+    OBJ_SCHARFE_EISENTEILE=490,
+    OBJ_KNOBLAUCHZEHEN=491,
+    OBJ_GIFTSTRAUCH=492,
+    OBJ_WACHHUND=493,
+    OBJ_SCHWARZE_KATZE=494,
+    OBJ_WACHHUNDTRAINING=495,
+    OBJ_KATZENDRESSUR=496,
+    OBJ_FINGER_DES_HERRN=497,
+    OBJ_HANDWERKSSCHILD_FRIEDHOF=498,
+    OBJ_GRAEBERFELD=499,
+    OBJ_STEINKREIS=500,
+    OBJ_LIEGEPLAN=501,
+    OBJ_GRABHUEGEL=502,
+    OBJ_FRIEDHOFSHECKEN=503,
+    OBJ_KOMPOSTHAUFEN=504,
+    OBJ_GRAEBER_KLEIN=505,
+    OBJ_FRIEDHOFSTOR=506,
+    OBJ_ENGELSSTATUE=507,
+    OBJ_GARGOYLENKOPF=508,
+    OBJ_GRAEBER_MITTEL=509,
+    OBJ_FRIEDHOFSSTATUEN=510,
+    OBJ_STEINKREIS_DRUDENFUSS=511,
+    OBJ_KNORRIGER_BAUM=512,
+    OBJ_GRUFT=513,
+    OBJ_FRIEDHOFSBANK=514,
+    OBJ_GEHILFENKONTROLLE=515,
+    OBJ_RUINEN=516,
+    OBJ_FRIEDHOFSKAPELLE=517,
+    OBJ_FRIEDHOFSSCHAUFEL_UND_EIMER=518,
+    OBJ_KNOCHENHAMMER=519,
+    OBJ_SANDUHR=520,
+    OBJ_SEZIERMESSER=521,
+    OBJ_URNEN=522,
+    OBJ_OPFERSTEIN=523,
+    OBJ_IKONENSCHREIN=524,
+    OBJ_KAPELLENALTAR=525,
+    OBJ_ABGEHAENGTES_KREUZ=526,
+    OBJ_SANDRELIEF=527,
+    OBJ_FRIEDHOFSLEUCHTER=528,
+    OBJ_NEKROMANTENTURM=529,
+    OBJ_EXPERIMENTIERTISCH=530,
+    OBJ_LEDERGURTE=531,
+    OBJ_BILDNIS_DES_LEBENS=532,
+    OBJ_GEWITTER_FOKUSSIERER=533,
+    OBJ_BALSAMIERKIT=534,
+    OBJ_LIEBESGESTIRNE=535,
+    OBJ_OKULAR=536,
+    OBJ_BLUME_IN_STEINMUND=537,
+    OBJ_RABENFIGURINE=538,
+    OBJ_KRYPTA=539,
+    OBJ_SEANCEKREIS=540,
+    OBJ_KOHLEBECKEN=541,
+    OBJ_URNENREGAL=542,
+    OBJ_SCHUTZZEICHEN=543,
+    OBJ_SPINNENNETZ=544,
+    OBJ_VERSTEINERTER_GEHILFE=545,
+    OBJ_MECHANISCHER_GEIST=546,
+    OBJ_BILDNIS_DES_VATERS=547,
+    OBJ_GEHEIMES_GRAB=548,
+    OBJ_KNOCHEN=549,
+    OBJ_SCHAEDEL=550,
+    OBJ_LEICHENHEMD=551,
+    OBJ_ECTOPLASMA=552,
+    OBJ_KNOCHENARMREIF=553,
+    OBJ_SCHAEDELKERZE=554,
+    OBJ_HEXERDOKUMENT_I=555,
+    OBJ_DUNKLER_VERFALL=556,
+    OBJ_HEXERDOKUMENT_II=557,
+    OBJ_NEKROMANTENROBE=558,
+    OBJ_STALLUNGEN=559,
+    OBJ_EISENTUEREN=560,
+    OBJ_SPIESSE=561,
+    OBJ_REGENTONNE=562,
+    OBJ_WACHHAUS=563,
+    OBJ_EISENBAENDER=564,
+    OBJ_HOFBRUNNEN=565,
+    OBJ_SCHLOSSFALLEN=566,
+    OBJ_FUNDAMENTVERSTAERKUNG=567,
+    OBJ_ZISTERNE=568,
+    OBJ_WEHRGANG=569,
+    OBJ_MAUERVORBAUTEN=570,
+    OBJ_SCHAUFELAUFZUG=571,
+    OBJ_KONTOR=572,
+    OBJ_KAMINSTELLE=573,
+    OBJ_JOURNAL=574,
+    OBJ_DER_KNOGGE=575,
+    OBJ_STEINGEWICHTE_AM_BAND=576,
+    OBJ_WANNENBAD=577,
+    OBJ_ERFOLGSCHART=578,
+    OBJ_WAPPENSAMMLUNG=579,
+    OBJ_EISENGEWICHTESTANGE=580,
+    OBJ_WANNENVORLEGER=581,
+    OBJ_SCHIFFSMODELL_AUS_VENEDIG=582,
+    OBJ_KAMPFMASCHINE=583,
+    OBJ_WANDTEPPICHE=584,
+    OBJ_INTRIGENABWEHR_I_BIS_IV=585,
+    OBJ_DUFTOELZULEITUNG=586,
+    OBJ_ALCHIMISTENKAMMER=587,
+    OBJ_ALCHIMISTENVERTRAG=588,
+    OBJ_OHRENSESSEL=589,
+    OBJ_SCHUTZBRILLE=590,
+    OBJ_SCHMUSEKATZE=591,
+    OBJ_FUSSBANK=592,
+    OBJ_VENTILKONSTRUKTION=593,
+    OBJ_SUESSWERKKISTE=594,
+    OBJ_WASSERPFEIFE=595,
+    OBJ_RAUCHABZUG=596,
+    OBJ_ZUBERSPUELUNG=597,
+    OBJ_KANONENTURM=598,
+    OBJ_STEINKUGEL=599,
+    OBJ_EINFACHE_KANONE=600,
+    OBJ_SCHWARZPULVERLADUNG=601,
+    OBJ_EISENKUGEL=602,
+    OBJ_LANGES_ROHR=603,
+    OBJ_KIMME_UND_KORN=604,
+    OBJ_KANLLGASBEHAELTER=605,
+    OBJ_SCHRAPPNELL=606,
+    OBJ_GEZOGENER_LAUF=607,
+    OBJ_FADENKREUZ=608,
+    OBJ_MELONITLADUNG=609,
+    OBJ_HUNDERT_PFUENDER=610,
+    OBJ_DOPPELKANONE=611,
+    OBJ_KARTAESCHE=612,
+    OBJ_DREIFACHKANONE=613,
+    OBJ_GEHEIMKABINETT=614,
+    OBJ_TANZBAERENKAEFIG=615,
+    OBJ_WEINVORRAT=616,
+    OBJ_LEIER=617,
+    OBJ_TANZBAER=618,
+    OBJ_SCHLINGENFALLE=619,
+    OBJ_LAGERFEUER_DER_ZIGEUNER=620,
+    OBJ_GEDICHTLESUNG_TRIBUENE=621,
+    OBJ_HUNDEZWINGER=622,
+    OBJ_INNEREIENFASS=623,
+    OBJ_HOCHSEIL=624,
+    OBJ_TRAUMFAENGER=625,
+    OBJ_NETZFALLE=626,
+    OBJ_BALDACHIN=627,
+    OBJ_STEIN_DER_STRAFE=628,
+    OBJ_FRATZENGESICHTER=629,
+    OBJ_AELTESTENWAGEN=630,
+    OBJ_ZIGEUNERSCHATULLE=631,
+    OBJ_SIPPENTEPPICH=632,
+    OBJ_BLUTDOLCH=633,
+    OBJ_SIPPENBILDNIS=634,
+    OBJ_SIPPENCHRONIK=635,
+    OBJ_AELTESTENHAUT=636,
+    OBJ_GLASAUGE_AUF_PODEST=637,
+    OBJ_SPUCKNAPF=638,
+    OBJ_ZIRKUSZELT=639,
+    OBJ_ZELTBUEHNE=640,
+    OBJ_SCHMINKTOEPFE=641,
+    OBJ_POKERTISCH=642,
+    OBJ_JONGLIERBAELLE=643,
+    OBJ_MANUSKRIPTSAMMLUNG=644,
+    OBJ_ZIGEUNER_SCHEMEL=645,
+    OBJ_TASCHENSPIELERKASTEN=646,
+    OBJ_KOSTUEMFUNDUS=647,
+    OBJ_LIEGEKISSEN=648,
+    OBJ_BUECHERSTAPEL=649,
+    OBJ_WAHRSAGERWAGEN=650,
+    OBJ_FEUERSTELLE=651,
+    OBJ_AUSGESTOPFTER_BAER=652,
+    OBJ_GLASKUGEL=653,
+    OBJ_FAULIGES_GEBISS=654,
+    OBJ_STERNENKARTE=655,
+    OBJ_KRISTALLKUGEL=656,
+    OBJ_KNOCHENFEUER=657,
+    OBJ_GIFTDOLCHSAMMLUNG=658,
+    OBJ_WEIDENHOLZ=659,
+    OBJ_HASE=660,
+    OBJ_VOGELBEERE=661,
+    OBJ_LEDER=662,
+    OBJ_FLOETE=663,
+    OBJ_WEIDENRUTE=664,
+    OBJ_HYPNOSEPENDEL=665,
+    OBJ_DORNROESCHENSPINDEL=666,
+    OBJ_KRISTALLKUGEL_OBJEKT=667,
+    OBJ_VOODOOPUPPE=668,
+    OBJ_SCHILD_SCHNEIDER=669,
+    OBJ_SCHNEIDEREI_ARBEITSRAUM=670,
+    OBJ_KLEIDERSCHRANK=671,
+    OBJ_SICHEL=672,
+    OBJ_SCHNITTMUSTERKATALOG=673,
+    OBJ_FINGERHUT=674,
+    OBJ_SITZECKE=675,
+    OBJ_ZUTATENREGAL=676,
+    OBJ_WALKTROMMEL=677,
+    OBJ_NADELKISSEN=678,
+    OBJ_UMKLEIDEKABINE=679,
+    OBJ_WEBSTUHL=680,
+    OBJ_NAEHMASCHINE=681,
+    OBJ_CATWALK=682,
+    OBJ_ANZIEHPUPPE=683,
+    OBJ_WEINREGAL_SCHNEIDER=684,
+    OBJ_SPIEGEL=685,
+    OBJ_WOLLE=686,
+    OBJ_FLACHS=687,
+    OBJ_PFLANZENFARBSTOFF=688,
+    OBJ_TUCH=689,
+    OBJ_WARME_SOCKEN=690,
+    OBJ_WOLLUMHANG=691,
+    OBJ_LEDERWAMS=692,
+    OBJ_WAFFENROCK=693,
+    OBJ_GOLDGEWIRKTE_SCHAERPE=694,
+    OBJ_ZAUBERHUT=695,
+    OBJ_TRAUMGIFT=696,
+    OBJ_WAFFENGIFT=697,
+    OBJ_TRUNK_DER_ARBEITSFREUDE=698,
+    OBJ_BRODEM_DER_VERGESSLICHKEIT=699,
+    OBJ_BRODEM_DER_BERSERKERWUT=700,
+    OBJ_BRODEM_DER_FAEULNIS=701,
+    OBJ_DUFT_DER_WILLFAEHRIGKEIT=702,
+    OBJ_DUFT_DER_BLINDEN_EIFERSUCHT=703,
+    OBJ_DUFT_DER_MANIPULATION=704,
+    OBJ_SCHLAFTRUNK=705,
+    OBJ_LAEHMUNGSGIFT=706,
+    OBJ_ANGSTGIFT=707,
+    OBJ_ANTIDOT=708,
+    OBJ_MAGISCHE_TINTE=709,
+    OBJ_TRUNK_DES_7_SINNS=710,
+    OBJ_HOLZSPLITTER_VOM_KREUZ_JESU=711,
+    OBJ_SIEBENMEILENSTIEFEL=712,
+    OBJ_RING_DER_NIBELUNGEN=713,
+    OBJ_SCHWURDOLCH_HERZOG_WIDUKINDS=714,
+    OBJ_SPEER_DES_HAGEN_VON_TRONJE=715,
+    OBJ_SIEGEL_DER_TEMPELHERREN=716,
+    OBJ_BUCH_DER_WEISHEITEN=717,
+    OBJ_EISENHANDSCHUH_DES_SHERIFFS=718,
+    OBJ_KRISTALLKUGEL_DER_HELLSICHT=719,
+    OBJ_KRIEGSBANNER_KARLS_DES_GROSSEN=720,
+    OBJ_DUELLPISTOLE_DES_HL_ZURRIO=721,
+    OBJ_AMULET_DER_INTUITION=722,
+    OBJ_CHARISMA_AMULET=723,
+    OBJ_BALMUNG_SIEGFRIEDS_SCHWERT=724,
+    OBJ_RECHENSCHIEBER_VON_JACOB_FUGGER=725,
+    OBJ_TARNKAPPE_DER_NIBELUNGEN=726,
+    OBJ_REISSBRETT_DES_LEONARDO_DA_VINCI=727,
+    OBJ_AMULET_DES_GLUECKS=728,
+    OBJ_ROBE_DES_LEONARDO_DA_VINCI=729,
+    OBJ_STERN_VON_BETHLEHEM=730,
+    OBJ_MARKTSTAND_OKKULT=731
+} OBJECT_PROTOTYPE;
+
 struct AhmInfo { /* Whatever it is */
     int character_id;
-    undefined field1_0x4;
-    undefined field2_0x5;
-    undefined field3_0x6;
-    undefined field4_0x7;
-    undefined field5_0x8;
-    undefined field6_0x9;
-    undefined field7_0xa;
-    undefined field8_0xb;
-    undefined field9_0xc;
-    undefined field10_0xd;
-    undefined field11_0xe;
-    undefined field12_0xf;
-    undefined field13_0x10;
-    undefined field14_0x11;
-    undefined field15_0x12;
-    undefined field16_0x13;
-    undefined field17_0x14;
-    undefined field18_0x15;
-    undefined field19_0x16;
-    undefined field20_0x17;
-    undefined field21_0x18;
-    undefined field22_0x19;
-    undefined field23_0x1a;
-    undefined field24_0x1b;
-    undefined field25_0x1c;
-    undefined field26_0x1d;
-    undefined field27_0x1e;
-    undefined field28_0x1f;
-    undefined field29_0x20;
-    undefined field30_0x21;
-    undefined field31_0x22;
-    undefined field32_0x23;
-    undefined field33_0x24;
-    undefined field34_0x25;
-    undefined field35_0x26;
-    undefined field36_0x27;
-    undefined field37_0x28;
-    undefined field38_0x29;
-    undefined field39_0x2a;
-    undefined field40_0x2b;
-    undefined field41_0x2c;
-    undefined field42_0x2d;
-    undefined field43_0x2e;
-    undefined field44_0x2f;
-    undefined field45_0x30;
-    undefined field46_0x31;
-    undefined field47_0x32;
-    undefined field48_0x33;
-    undefined field49_0x34;
-    undefined field50_0x35;
-    undefined field51_0x36;
-    undefined field52_0x37;
-    undefined field53_0x38;
-    undefined field54_0x39;
-    undefined field55_0x3a;
-    undefined field56_0x3b;
+    float some_float;
+    undefined field2_0x8;
+    undefined field3_0x9;
+    undefined field4_0xa;
+    undefined field5_0xb;
+    enum OBJECT_PROTOTYPE object_prot_index;
+    undefined field7_0xe;
+    undefined field8_0xf;
+    undefined field9_0x10;
+    undefined field10_0x11;
+    undefined field11_0x12;
+    undefined field12_0x13;
+    undefined field13_0x14;
+    undefined field14_0x15;
+    undefined field15_0x16;
+    undefined field16_0x17;
+    undefined field17_0x18;
+    undefined field18_0x19;
+    undefined field19_0x1a;
+    undefined field20_0x1b;
+    undefined field21_0x1c;
+    undefined field22_0x1d;
+    undefined field23_0x1e;
+    undefined field24_0x1f;
+    undefined field25_0x20;
+    undefined field26_0x21;
+    undefined field27_0x22;
+    undefined field28_0x23;
+    undefined field29_0x24;
+    undefined field30_0x25;
+    undefined field31_0x26;
+    undefined field32_0x27;
+    undefined field33_0x28;
+    undefined field34_0x29;
+    undefined field35_0x2a;
+    undefined field36_0x2b;
+    undefined field37_0x2c;
+    undefined field38_0x2d;
+    undefined field39_0x2e;
+    undefined field40_0x2f;
+    undefined field41_0x30;
+    undefined field42_0x31;
+    undefined field43_0x32;
+    undefined field44_0x33;
+    undefined field45_0x34;
+    undefined field46_0x35;
+    undefined field47_0x36;
+    undefined field48_0x37;
+    undefined field49_0x38;
+    undefined field50_0x39;
+    undefined field51_0x3a;
+    undefined field52_0x3b;
 };
 
 typedef enum Animal {
@@ -111,6 +841,97 @@ typedef enum Animal {
 } Animal;
 
 typedef struct BuildingInstance BuildingInstance, *PBuildingInstance;
+
+typedef enum BUILDING_PROTOTYPE {
+    GEB_NULL=0,
+    GEB_ARBEITERUNTERKUNFT=1,
+    GEB_ARBEITERUNTERKUNFT_MITTEL=2,
+    GEB_ARBEITERUNTERKUNFT_GROSS=3,
+    GEB_HAUS=4,
+    GEB_BUERGERHAUS=5,
+    GEB_VILLA=6,
+    GEB_PALAZZO=7,
+    GEB_SCHOEPFSTELLE=8,
+    GEB_BRUNNEN=9,
+    GEB_HEBEBRUNNEN=10,
+    GEB_SCHMUGGLERLOCH=11,
+    GEB_UNTERSCHLUPF=12,
+    GEB_DIEBESGILDE=13,
+    GEB_WECHSELSTUBE=14,
+    GEB_GELDLEIHE=15,
+    GEB_BANKHAUS=16,
+    GEB_GEFAENGNIS=17,
+    GEB_SCHULDTURM=18,
+    GEB_KERKER=19,
+    GEB_KIRCHE=20,
+    GEB_DOM=21,
+    GEB_KATHEDRALE=22,
+    GEB_TINKTUREI=23,
+    GEB_KRAEUTERLADEN=24,
+    GEB_ALCHIMISTENSTUBE=25,
+    GEB_LAGERSCHUPPEN=26,
+    GEB_LAGERHAUS=27,
+    GEB_LAGERHALLE=28,
+    GEB_MARKTPLATZ=29,
+    GEB_WALDSTUECK=30,
+    GEB_STEINBRUCH=31,
+    GEB_MINE=32,
+    GEB_SIEDEREI=33,
+    GEB_DUFTWERKSTATT=34,
+    GEB_PARFUMERIE=35,
+    GEB_VERWALTUNGSHAUS=36,
+    GEB_RATSSITZ=37,
+    GEB_RATHAUS=38,
+    GEB_RAUBRITTERFESTE=39,
+    GEB_GALGENBERG=40,
+    GEB_GIESSEREI=41,
+    GEB_SCHMIEDE=42,
+    GEB_GOLDSCHMIEDE=43,
+    GEB_STADTWACHE_KLEIN=44,
+    GEB_STADTWACHE_MITTEL=45,
+    GEB_STADTWACHE_GROSS=46,
+    GEB_MAUREREI=47,
+    GEB_STEINSCHNEIDEREI=48,
+    GEB_STEINMETZHUETTE=49,
+    GEB_TISCHLEREI=50,
+    GEB_DRECHSLEREI=51,
+    GEB_SAEGEWERK=52,
+    GEB_SCHAENKE=53,
+    GEB_WIRTSHAUS=54,
+    GEB_GASTHAUS=55,
+    GEB_HANDWERKSHAUS_PARFUMEURE=56,
+    GEB_ZUNFTHAUS_PARFUMEURE=57,
+    GEB_GILDENSITZ_PARFUMEURE=58,
+    GEB_HANDWERKSHAUS_SCHMIEDE=59,
+    GEB_ZUNFTHAUS_SCHMIEDE=60,
+    GEB_GILDENSITZ_SCHMIEDE=61,
+    GEB_HANDWERKSHAUS_STEINMETZ=62,
+    GEB_ZUNFTHAUS_STEINMETZ=63,
+    GEB_GILDENSITZ_STEINMETZ=64,
+    GEB_HANDWERKSHAUS_TISCHLER=65,
+    GEB_ZUNFTHAUS_TISCHLER=66,
+    GEB_GILDENSITZ_TISCHLER=67,
+    GEB_TRANSPORT_STADT=68,
+    GEB_TRANSPORT_UMLAND=69,
+    GEB_TRANSPORT_FERN=70,
+    GEB_KONTOR=71,
+    GEB_TOTENFELD=72,
+    GEB_GOTTESACKER=73,
+    GEB_FRIEDHOF=74,
+    GEB_DOMIZIL=75,
+    GEB_BURG=76,
+    GEB_SCHLOSS=77,
+    GEB_VAGABUNDENLAGER=78,
+    GEB_ZIGEUNERLAGER=79,
+    GEB_LAGER_DER_FAHRENSLEUTE=80,
+    GEB_NAEHSTUBE=81,
+    GEB_SCHNEIDEREI=82,
+    GEB_GEWANDSCHNEIDEREI=83,
+    GEB_STATUE_KLEIN=84,
+    GEB_STATUE_MITTEL=85,
+    GEB_STATUE_GROSS=86,
+    GEB_MARKTFLECK=87
+} BUILDING_PROTOTYPE;
 
 typedef struct LinkedList LinkedList, *PLinkedList;
 
@@ -195,12 +1016,12 @@ struct UnknownLinkedList64 {
 };
 
 struct BuildingInstance {
-    byte building_prot_index;
+    enum BUILDING_PROTOTYPE building_prot_index;
     int object_id;
     char building_name[32]; /* Created by retype action */
     ushort character_index_1;
     short character_index_2; /* Maybe a mistake */
-    ushort current_room_prot_index;
+    enum OBJECT_PROTOTYPE current_room_prot_index;
     undefined4 field6_0x2b;
     undefined field7_0x2f;
     undefined4 field8_0x30;
@@ -232,10 +1053,10 @@ struct BuildingInstance {
     undefined field34_0x5c;
     struct LinkedList * building_content;
     struct SomethingAboutBuilding * building_something;
-    struct AhmInfo * ahm_info;
+    undefined * additional_ptr_of_different_size; /* AhmInfo or Graveyard stuff or ... */
     undefined4 field38_0x69; /* Maybe 2 fields by 2 bytes */
     undefined4 field39_0x6d;
-    undefined4 field40_0x71;
+    undefined * f3g_PlantMap_ptr;
     undefined2 field41_0x75;
     undefined field42_0x77;
     undefined field43_0x78;
@@ -7212,7 +8033,7 @@ struct QueueEntry {
 };
 
 struct LinkedList {
-    ushort object_prot_index;
+    enum OBJECT_PROTOTYPE object_prot_index;
     int this_object_id;
     int container_object_id;
     int owner_object_id;
@@ -7221,33 +8042,31 @@ struct LinkedList {
     undefined field6_0x13;
     struct LinkedList * content;
     struct SomethingAboutBuilding * something_about_building_ptr;
-    byte time_1;
-    byte time_2;
-    short character_id_for_action;
-    undefined field12_0x20;
-    undefined field13_0x21;
+    union __LinkedListUnion any;
+    undefined field10_0x20;
+    undefined field11_0x21;
     byte action_in_progress_flag; /* 0 or 1 */
-    undefined field15_0x23;
-    undefined field16_0x24;
-    undefined field17_0x25;
-    undefined field18_0x26;
-    undefined field19_0x27;
-    undefined field20_0x28;
+    undefined field13_0x23;
+    undefined field14_0x24;
+    undefined field15_0x25;
+    undefined field16_0x26;
+    undefined field17_0x27;
+    undefined field18_0x28;
     struct UnknownLinkedList64 * ptr_to_64_bytes_linked_list; /* Created by retype action */
-    undefined field22_0x2d;
-    undefined field23_0x2e;
-    undefined field24_0x2f;
-    undefined field25_0x30;
-    undefined field26_0x31;
-    undefined field27_0x32;
-    undefined field28_0x33;
-    undefined field29_0x34;
-    undefined field30_0x35;
-    undefined field31_0x36;
-    undefined field32_0x37;
-    undefined field33_0x38;
-    undefined field34_0x39;
-    undefined field35_0x3a;
+    undefined field20_0x2d;
+    undefined field21_0x2e;
+    undefined field22_0x2f;
+    undefined field23_0x30;
+    undefined field24_0x31;
+    undefined field25_0x32;
+    undefined field26_0x33;
+    undefined field27_0x34;
+    undefined field28_0x35;
+    undefined field29_0x36;
+    undefined field30_0x37;
+    undefined field31_0x38;
+    undefined field32_0x39;
+    undefined field33_0x3a;
     struct Character_580 * character_580_ptr;
     struct LinkedList * next;
 };
@@ -7676,6 +8495,19 @@ struct LightInfo {
     undefined field420_0x1aa;
     undefined field421_0x1ab;
 };
+
+typedef enum BuildingKind {
+    NULL_KIND=0,
+    REGULAR_PROD=1,
+    RAW_MATERIAL_PROD=2,
+    CITY_BUILDING=3,
+    CURCH_KIND=4,
+    GUILD_HOUSE=5,
+    HOME_OR_CASTLE=6,
+    GURDS_KIND=7,
+    THIEF_BANK_WAREHOUSE=8,
+    STATUE_KIND=9
+} BuildingKind;
 
 typedef struct BuildingPrototype BuildingPrototype, *PBuildingPrototype;
 
@@ -8300,6 +9132,8 @@ typedef enum PlayerMode {
     UNKNOWN_17=17
 } PlayerMode;
 
+typedef struct Handlung Handlung, *PHandlung;
+
 struct Character {
     short index;
     enum PlayerMode playermode;
@@ -8313,7 +9147,7 @@ struct Character {
     undefined field9_0xe;
     undefined field10_0xf;
     float field11_0x10;
-    float field12_0x14;
+    float random_float;
     float field13_0x18;
     float field14_0x1c;
     float field15_0x20;
@@ -8328,7 +9162,7 @@ struct Character {
     undefined field24_0x2f;
     char first_name[16];
     char last_name[16];
-    undefined2 field27_0x50;
+    short some_index;
     undefined field28_0x52;
     undefined field29_0x53;
     undefined field30_0x54;
@@ -8339,378 +9173,668 @@ struct Character {
     undefined field35_0x59;
     undefined field36_0x5a;
     undefined field37_0x5b;
-    int character_id_birth_related;
-    undefined4 field39_0x60;
-    undefined4 field40_0x64;
-    undefined4 field41_0x68;
-    undefined4 field42_0x6c;
-    undefined4 field43_0x70;
-    undefined4 field44_0x74;
-    undefined4 field45_0x78;
-    undefined field46_0x7c;
-    undefined field47_0x7d;
-    undefined field48_0x7e;
-    undefined field49_0x7f;
-    undefined field50_0x80;
-    undefined field51_0x81;
-    undefined field52_0x82;
-    undefined field53_0x83;
-    undefined field54_0x84;
-    undefined field55_0x85;
-    undefined field56_0x86;
-    undefined field57_0x87;
-    undefined field58_0x88;
-    undefined field59_0x89;
-    undefined field60_0x8a;
-    undefined field61_0x8b;
-    undefined field62_0x8c;
-    undefined field63_0x8d;
-    undefined field64_0x8e;
-    undefined field65_0x8f;
-    undefined field66_0x90;
-    undefined field67_0x91;
-    undefined field68_0x92;
-    undefined field69_0x93;
-    undefined field70_0x94;
-    undefined field71_0x95;
-    undefined field72_0x96;
-    undefined field73_0x97;
-    undefined field74_0x98;
-    undefined field75_0x99;
-    undefined field76_0x9a;
-    undefined field77_0x9b;
-    undefined field78_0x9c;
-    undefined field79_0x9d;
-    undefined field80_0x9e;
-    undefined field81_0x9f;
-    undefined field82_0xa0;
-    undefined field83_0xa1;
-    undefined field84_0xa2;
-    undefined field85_0xa3;
-    undefined field86_0xa4;
-    undefined field87_0xa5;
-    undefined field88_0xa6;
-    undefined field89_0xa7;
-    undefined field90_0xa8;
-    undefined field91_0xa9;
-    undefined field92_0xaa;
-    undefined field93_0xab;
-    undefined field94_0xac;
-    undefined field95_0xad;
-    undefined field96_0xae;
-    undefined field97_0xaf;
-    undefined field98_0xb0;
-    undefined field99_0xb1;
-    undefined field100_0xb2;
-    undefined field101_0xb3;
-    undefined field102_0xb4;
-    undefined field103_0xb5;
-    undefined field104_0xb6;
-    undefined field105_0xb7;
-    undefined field106_0xb8;
-    undefined field107_0xb9;
-    undefined field108_0xba;
-    undefined field109_0xbb;
-    undefined field110_0xbc;
-    undefined field111_0xbd;
-    undefined field112_0xbe;
-    undefined field113_0xbf;
-    undefined field114_0xc0;
-    undefined field115_0xc1;
-    undefined field116_0xc2;
-    undefined field117_0xc3;
-    undefined field118_0xc4;
-    undefined field119_0xc5;
-    undefined field120_0xc6;
-    undefined field121_0xc7;
-    undefined field122_0xc8;
-    undefined field123_0xc9;
-    undefined field124_0xca;
-    undefined field125_0xcb;
-    undefined field126_0xcc;
-    undefined field127_0xcd;
-    undefined field128_0xce;
-    undefined field129_0xcf;
-    undefined field130_0xd0;
-    undefined field131_0xd1;
-    undefined field132_0xd2;
-    undefined field133_0xd3;
-    undefined field134_0xd4;
-    undefined field135_0xd5;
-    undefined field136_0xd6;
-    undefined field137_0xd7;
-    undefined field138_0xd8;
-    undefined field139_0xd9;
-    undefined field140_0xda;
-    undefined field141_0xdb;
-    undefined field142_0xdc;
-    undefined field143_0xdd;
-    undefined field144_0xde;
-    undefined field145_0xdf;
-    undefined field146_0xe0;
-    undefined field147_0xe1;
-    undefined field148_0xe2;
-    undefined field149_0xe3;
-    undefined field150_0xe4;
-    undefined field151_0xe5;
-    undefined field152_0xe6;
-    undefined field153_0xe7;
-    undefined field154_0xe8;
-    undefined field155_0xe9;
-    undefined field156_0xea;
-    undefined field157_0xeb;
-    undefined field158_0xec;
-    undefined field159_0xed;
-    undefined field160_0xee;
-    undefined field161_0xef;
-    undefined field162_0xf0;
-    undefined field163_0xf1;
-    undefined field164_0xf2;
-    undefined field165_0xf3;
-    undefined field166_0xf4;
-    undefined field167_0xf5;
-    undefined field168_0xf6;
-    undefined field169_0xf7;
-    undefined field170_0xf8;
-    undefined field171_0xf9;
-    undefined field172_0xfa;
-    undefined field173_0xfb;
-    undefined field174_0xfc;
-    undefined field175_0xfd;
-    undefined field176_0xfe;
-    undefined field177_0xff;
-    undefined field178_0x100;
-    undefined field179_0x101;
-    undefined field180_0x102;
-    undefined field181_0x103;
-    undefined field182_0x104;
-    undefined field183_0x105;
-    undefined field184_0x106;
-    undefined field185_0x107;
-    undefined field186_0x108;
-    undefined field187_0x109;
-    undefined field188_0x10a;
-    undefined field189_0x10b;
-    undefined field190_0x10c;
-    undefined field191_0x10d;
-    undefined field192_0x10e;
-    undefined field193_0x10f;
-    undefined field194_0x110;
-    undefined field195_0x111;
-    undefined field196_0x112;
-    undefined field197_0x113;
-    undefined field198_0x114;
-    undefined field199_0x115;
-    undefined field200_0x116;
-    undefined field201_0x117;
-    undefined field202_0x118;
-    undefined field203_0x119;
-    undefined field204_0x11a;
-    undefined field205_0x11b;
-    undefined field206_0x11c;
-    undefined field207_0x11d;
-    undefined field208_0x11e;
-    undefined field209_0x11f;
-    undefined field210_0x120;
-    undefined field211_0x121;
-    undefined field212_0x122;
-    undefined field213_0x123;
-    undefined field214_0x124;
-    undefined field215_0x125;
-    undefined field216_0x126;
-    undefined field217_0x127;
-    undefined field218_0x128;
-    undefined field219_0x129;
-    undefined field220_0x12a;
-    undefined field221_0x12b;
-    undefined field222_0x12c;
-    undefined field223_0x12d;
-    undefined field224_0x12e;
-    undefined field225_0x12f;
-    undefined field226_0x130;
-    undefined field227_0x131;
+    int children_maybe[8];
+    undefined field39_0x7c;
+    undefined field40_0x7d;
+    undefined field41_0x7e;
+    undefined field42_0x7f;
+    undefined field43_0x80;
+    undefined field44_0x81;
+    undefined field45_0x82;
+    undefined field46_0x83;
+    undefined field47_0x84;
+    undefined field48_0x85;
+    undefined field49_0x86;
+    undefined field50_0x87;
+    undefined field51_0x88;
+    undefined field52_0x89;
+    undefined field53_0x8a;
+    undefined field54_0x8b;
+    undefined field55_0x8c;
+    undefined field56_0x8d;
+    undefined field57_0x8e;
+    undefined field58_0x8f;
+    undefined field59_0x90;
+    undefined field60_0x91;
+    undefined field61_0x92;
+    undefined field62_0x93;
+    undefined field63_0x94;
+    undefined field64_0x95;
+    undefined field65_0x96;
+    undefined field66_0x97;
+    undefined field67_0x98;
+    undefined field68_0x99;
+    undefined field69_0x9a;
+    undefined field70_0x9b;
+    undefined field71_0x9c;
+    undefined field72_0x9d;
+    undefined field73_0x9e;
+    undefined field74_0x9f;
+    undefined field75_0xa0;
+    undefined field76_0xa1;
+    undefined field77_0xa2;
+    undefined field78_0xa3;
+    undefined field79_0xa4;
+    undefined field80_0xa5;
+    undefined field81_0xa6;
+    undefined field82_0xa7;
+    undefined field83_0xa8;
+    undefined field84_0xa9;
+    undefined field85_0xaa;
+    undefined field86_0xab;
+    undefined field87_0xac;
+    undefined field88_0xad;
+    undefined field89_0xae;
+    undefined field90_0xaf;
+    undefined field91_0xb0;
+    undefined field92_0xb1;
+    undefined field93_0xb2;
+    undefined field94_0xb3;
+    undefined field95_0xb4;
+    undefined field96_0xb5;
+    undefined field97_0xb6;
+    undefined field98_0xb7;
+    undefined field99_0xb8;
+    undefined field100_0xb9;
+    undefined field101_0xba;
+    undefined field102_0xbb;
+    undefined field103_0xbc;
+    undefined field104_0xbd;
+    undefined field105_0xbe;
+    undefined field106_0xbf;
+    undefined field107_0xc0;
+    undefined field108_0xc1;
+    undefined field109_0xc2;
+    undefined field110_0xc3;
+    undefined field111_0xc4;
+    undefined field112_0xc5;
+    undefined field113_0xc6;
+    undefined field114_0xc7;
+    undefined field115_0xc8;
+    undefined field116_0xc9;
+    undefined field117_0xca;
+    undefined field118_0xcb;
+    undefined field119_0xcc;
+    undefined field120_0xcd;
+    undefined field121_0xce;
+    undefined field122_0xcf;
+    undefined field123_0xd0;
+    undefined field124_0xd1;
+    undefined field125_0xd2;
+    undefined field126_0xd3;
+    undefined field127_0xd4;
+    undefined field128_0xd5;
+    undefined field129_0xd6;
+    undefined field130_0xd7;
+    undefined field131_0xd8;
+    undefined field132_0xd9;
+    undefined field133_0xda;
+    undefined field134_0xdb;
+    undefined field135_0xdc;
+    undefined field136_0xdd;
+    undefined field137_0xde;
+    undefined field138_0xdf;
+    undefined field139_0xe0;
+    undefined field140_0xe1;
+    undefined field141_0xe2;
+    undefined field142_0xe3;
+    undefined field143_0xe4;
+    undefined field144_0xe5;
+    undefined field145_0xe6;
+    undefined field146_0xe7;
+    undefined field147_0xe8;
+    undefined field148_0xe9;
+    undefined field149_0xea;
+    undefined field150_0xeb;
+    undefined field151_0xec;
+    undefined field152_0xed;
+    undefined field153_0xee;
+    undefined field154_0xef;
+    undefined field155_0xf0;
+    undefined field156_0xf1;
+    undefined field157_0xf2;
+    undefined field158_0xf3;
+    undefined field159_0xf4;
+    undefined field160_0xf5;
+    undefined field161_0xf6;
+    undefined field162_0xf7;
+    undefined field163_0xf8;
+    undefined field164_0xf9;
+    undefined field165_0xfa;
+    undefined field166_0xfb;
+    undefined field167_0xfc;
+    undefined field168_0xfd;
+    undefined field169_0xfe;
+    undefined field170_0xff;
+    undefined field171_0x100;
+    undefined field172_0x101;
+    undefined field173_0x102;
+    undefined field174_0x103;
+    undefined field175_0x104;
+    undefined field176_0x105;
+    undefined field177_0x106;
+    undefined field178_0x107;
+    undefined field179_0x108;
+    undefined field180_0x109;
+    undefined field181_0x10a;
+    undefined field182_0x10b;
+    undefined field183_0x10c;
+    undefined field184_0x10d;
+    undefined field185_0x10e;
+    undefined field186_0x10f;
+    undefined field187_0x110;
+    undefined field188_0x111;
+    undefined field189_0x112;
+    undefined field190_0x113;
+    undefined field191_0x114;
+    undefined field192_0x115;
+    undefined field193_0x116;
+    undefined field194_0x117;
+    undefined field195_0x118;
+    undefined field196_0x119;
+    undefined field197_0x11a;
+    undefined field198_0x11b;
+    undefined field199_0x11c;
+    undefined field200_0x11d;
+    undefined field201_0x11e;
+    undefined field202_0x11f;
+    undefined field203_0x120;
+    undefined field204_0x121;
+    undefined field205_0x122;
+    undefined field206_0x123;
+    undefined field207_0x124;
+    undefined field208_0x125;
+    undefined field209_0x126;
+    undefined field210_0x127;
+    undefined field211_0x128;
+    undefined field212_0x129;
+    undefined field213_0x12a;
+    undefined field214_0x12b;
+    undefined field215_0x12c;
+    undefined field216_0x12d;
+    undefined field217_0x12e;
+    undefined field218_0x12f;
+    undefined field219_0x130;
+    undefined field220_0x131;
     undefined1 index_of_thingy_148; /* Created by retype action */
-    undefined field229_0x133;
-    undefined field230_0x134;
-    undefined field231_0x135;
-    undefined field232_0x136;
-    undefined field233_0x137;
-    undefined field234_0x138;
-    undefined field235_0x139;
-    undefined field236_0x13a;
-    undefined field237_0x13b;
-    undefined field238_0x13c;
-    undefined field239_0x13d;
-    undefined field240_0x13e;
-    undefined field241_0x13f;
-    undefined field242_0x140;
-    undefined field243_0x141;
-    undefined field244_0x142;
-    undefined field245_0x143;
-    undefined field246_0x144;
-    undefined field247_0x145;
-    undefined field248_0x146;
-    undefined field249_0x147;
-    undefined field250_0x148;
-    undefined field251_0x149;
-    undefined field252_0x14a;
-    undefined field253_0x14b;
-    undefined field254_0x14c;
-    undefined field255_0x14d;
-    undefined field256_0x14e;
-    undefined field257_0x14f;
-    undefined field258_0x150;
-    undefined field259_0x151;
-    undefined field260_0x152;
-    undefined field261_0x153;
-    undefined field262_0x154;
-    undefined field263_0x155;
-    undefined field264_0x156;
-    undefined field265_0x157;
-    undefined field266_0x158;
-    undefined field267_0x159;
-    undefined field268_0x15a;
-    undefined field269_0x15b;
-    undefined field270_0x15c;
-    undefined field271_0x15d;
-    undefined field272_0x15e;
-    undefined field273_0x15f;
-    undefined field274_0x160;
-    undefined field275_0x161;
-    undefined field276_0x162;
-    undefined field277_0x163;
-    undefined field278_0x164;
-    undefined field279_0x165;
-    undefined field280_0x166;
-    undefined field281_0x167;
-    undefined field282_0x168;
-    undefined field283_0x169;
-    undefined field284_0x16a;
-    undefined field285_0x16b;
+    undefined field222_0x133;
+    undefined field223_0x134;
+    undefined field224_0x135;
+    undefined field225_0x136;
+    undefined field226_0x137;
+    undefined field227_0x138;
+    undefined field228_0x139;
+    undefined field229_0x13a;
+    undefined field230_0x13b;
+    undefined field231_0x13c;
+    undefined field232_0x13d;
+    undefined field233_0x13e;
+    undefined field234_0x13f;
+    undefined field235_0x140;
+    undefined field236_0x141;
+    undefined field237_0x142;
+    undefined field238_0x143;
+    undefined field239_0x144;
+    undefined field240_0x145;
+    undefined field241_0x146;
+    undefined field242_0x147;
+    undefined field243_0x148;
+    undefined field244_0x149;
+    undefined field245_0x14a;
+    undefined field246_0x14b;
+    undefined field247_0x14c;
+    undefined field248_0x14d;
+    undefined field249_0x14e;
+    undefined field250_0x14f;
+    undefined field251_0x150;
+    undefined field252_0x151;
+    undefined field253_0x152;
+    undefined field254_0x153;
+    undefined field255_0x154;
+    undefined field256_0x155;
+    undefined field257_0x156;
+    undefined field258_0x157;
+    undefined field259_0x158;
+    undefined field260_0x159;
+    undefined field261_0x15a;
+    undefined field262_0x15b;
+    undefined field263_0x15c;
+    undefined field264_0x15d;
+    undefined field265_0x15e;
+    undefined field266_0x15f;
+    undefined field267_0x160;
+    undefined field268_0x161;
+    undefined field269_0x162;
+    undefined field270_0x163;
+    byte some_enum;
+    undefined field272_0x165;
+    undefined field273_0x166;
+    undefined field274_0x167;
+    undefined field275_0x168;
+    undefined field276_0x169;
+    undefined field277_0x16a;
+    undefined field278_0x16b;
     struct BuildingInstance * master_building;
-    struct BuildingInstance * maybe_home;
-    undefined field288_0x174;
-    undefined field289_0x175;
-    undefined field290_0x176;
-    undefined field291_0x177;
+    struct BuildingInstance * home;
+    undefined field281_0x174;
+    undefined field282_0x175;
+    undefined field283_0x176;
+    undefined field284_0x177;
     struct LinkedList * inventory;
-    int field293_0x17c;
-    undefined field294_0x180;
-    undefined field295_0x181;
-    undefined field296_0x182;
-    undefined field297_0x183;
+    struct Handlung * action_ptr;
+    undefined field287_0x180;
+    undefined field288_0x181;
+    undefined field289_0x182;
+    undefined field290_0x183;
     struct Character_580 * char_580_1;
-    undefined field299_0x188;
-    undefined field300_0x189;
-    undefined field301_0x18a;
-    undefined field302_0x18b;
-    int field303_0x18c;
-    int field304_0x190;
+    undefined field292_0x188;
+    undefined field293_0x189;
+    undefined field294_0x18a;
+    undefined field295_0x18b;
+    int field296_0x18c;
+    int field297_0x190;
     int action_points;
-    undefined field306_0x198;
-    undefined field307_0x199;
-    undefined field308_0x19a;
-    undefined field309_0x19b;
-    undefined field310_0x19c;
-    undefined field311_0x19d;
-    undefined field312_0x19e;
-    undefined field313_0x19f;
-    undefined field314_0x1a0;
-    undefined field315_0x1a1;
-    undefined field316_0x1a2;
-    undefined field317_0x1a3;
-    undefined field318_0x1a4;
-    undefined field319_0x1a5;
-    undefined field320_0x1a6;
-    undefined field321_0x1a7;
-    undefined field322_0x1a8;
-    undefined field323_0x1a9;
-    undefined field324_0x1aa;
-    undefined field325_0x1ab;
-    undefined field326_0x1ac;
-    undefined field327_0x1ad;
-    undefined field328_0x1ae;
-    undefined field329_0x1af;
-    undefined field330_0x1b0;
-    undefined1 field331_0x1b1;
-    undefined field332_0x1b2;
-    undefined field333_0x1b3;
+    undefined field299_0x198;
+    undefined field300_0x199;
+    undefined field301_0x19a;
+    undefined field302_0x19b;
+    undefined field303_0x19c;
+    undefined field304_0x19d;
+    undefined field305_0x19e;
+    undefined field306_0x19f;
+    undefined field307_0x1a0;
+    undefined field308_0x1a1;
+    undefined field309_0x1a2;
+    undefined field310_0x1a3;
+    undefined field311_0x1a4;
+    undefined field312_0x1a5;
+    undefined field313_0x1a6;
+    undefined field314_0x1a7;
+    undefined field315_0x1a8;
+    undefined field316_0x1a9;
+    undefined field317_0x1aa;
+    undefined field318_0x1ab;
+    undefined field319_0x1ac;
+    undefined field320_0x1ad;
+    undefined field321_0x1ae;
+    undefined field322_0x1af;
+    undefined field323_0x1b0;
+    undefined1 field324_0x1b1;
+    undefined field325_0x1b2;
+    undefined field326_0x1b3;
     int flags_maybe;
     int master_budget; /* Created by retype action */
-    ushort field336_0x1bc; /* Maybe 4 bytes */
-    undefined field337_0x1be;
-    undefined field338_0x1bf;
-    undefined4 field339_0x1c0;
-    undefined field340_0x1c4;
-    undefined field341_0x1c5;
-    undefined field342_0x1c6;
-    undefined field343_0x1c7;
+    ushort field329_0x1bc; /* Maybe 4 bytes */
+    undefined field330_0x1be;
+    undefined field331_0x1bf;
+    undefined4 field332_0x1c0;
+    undefined field333_0x1c4;
+    undefined field334_0x1c5;
+    undefined field335_0x1c6;
+    undefined field336_0x1c7;
     uint maybe_flags;
-    undefined field345_0x1cc;
-    undefined field346_0x1cd;
-    undefined field347_0x1ce;
-    undefined field348_0x1cf;
-    undefined field349_0x1d0;
-    undefined field350_0x1d1;
-    undefined field351_0x1d2;
-    undefined field352_0x1d3;
-    undefined field353_0x1d4;
-    undefined field354_0x1d5;
-    undefined field355_0x1d6;
-    undefined field356_0x1d7;
-    undefined field357_0x1d8;
-    undefined field358_0x1d9;
-    undefined field359_0x1da;
-    undefined field360_0x1db;
-    undefined field361_0x1dc;
-    undefined field362_0x1dd;
-    undefined field363_0x1de;
-    undefined field364_0x1df;
-    undefined field365_0x1e0;
-    undefined field366_0x1e1;
-    undefined field367_0x1e2;
-    undefined field368_0x1e3;
-    float field369_0x1e4;
-    undefined4 field370_0x1e8;
-    undefined field371_0x1ec;
-    undefined field372_0x1ed;
-    undefined field373_0x1ee;
-    undefined field374_0x1ef;
-    int field375_0x1f0;
-    undefined field376_0x1f4;
-    undefined field377_0x1f5;
-    undefined field378_0x1f6;
-    undefined field379_0x1f7;
-    undefined field380_0x1f8;
-    undefined field381_0x1f9;
-    undefined field382_0x1fa;
-    undefined field383_0x1fb;
-    undefined field384_0x1fc;
-    undefined field385_0x1fd;
-    undefined field386_0x1fe;
-    undefined field387_0x1ff;
-    undefined field388_0x200;
-    undefined field389_0x201;
-    undefined field390_0x202;
-    undefined field391_0x203;
-    undefined field392_0x204;
-    undefined field393_0x205;
-    undefined field394_0x206;
-    undefined field395_0x207;
-    undefined field396_0x208;
-    undefined field397_0x209;
-    undefined field398_0x20a;
-    undefined field399_0x20b;
+    undefined field338_0x1cc;
+    undefined field339_0x1cd;
+    undefined field340_0x1ce;
+    undefined field341_0x1cf;
+    undefined field342_0x1d0;
+    undefined field343_0x1d1;
+    undefined field344_0x1d2;
+    undefined field345_0x1d3;
+    undefined field346_0x1d4;
+    undefined field347_0x1d5;
+    undefined field348_0x1d6;
+    undefined field349_0x1d7;
+    undefined field350_0x1d8;
+    undefined field351_0x1d9;
+    undefined field352_0x1da;
+    undefined field353_0x1db;
+    undefined field354_0x1dc;
+    undefined field355_0x1dd;
+    undefined field356_0x1de;
+    undefined field357_0x1df;
+    undefined field358_0x1e0;
+    undefined field359_0x1e1;
+    undefined field360_0x1e2;
+    undefined field361_0x1e3;
+    float field362_0x1e4;
+    undefined4 field363_0x1e8;
+    undefined field364_0x1ec;
+    undefined field365_0x1ed;
+    undefined field366_0x1ee;
+    undefined field367_0x1ef;
+    int field368_0x1f0;
+    undefined field369_0x1f4;
+    undefined field370_0x1f5;
+    undefined field371_0x1f6;
+    undefined field372_0x1f7;
+    undefined field373_0x1f8;
+    undefined field374_0x1f9;
+    undefined field375_0x1fa;
+    undefined field376_0x1fb;
+    undefined field377_0x1fc;
+    undefined field378_0x1fd;
+    undefined field379_0x1fe;
+    undefined field380_0x1ff;
+    undefined field381_0x200;
+    undefined field382_0x201;
+    undefined field383_0x202;
+    undefined field384_0x203;
+    undefined field385_0x204;
+    undefined field386_0x205;
+    undefined field387_0x206;
+    undefined field388_0x207;
+    undefined field389_0x208;
+    undefined field390_0x209;
+    undefined field391_0x20a;
+    undefined field392_0x20b;
     int cut_scene_id;
-    int field401_0x210;
-    undefined field402_0x214;
-    byte field403_0x215;
-    byte field404_0x216;
-    byte field405_0x217;
-    byte field406_0x218;
-    undefined field407_0x219;
-    undefined field408_0x21a;
-    undefined field409_0x21b;
+    int field394_0x210;
+    undefined field395_0x214;
+    byte field396_0x215;
+    byte field397_0x216;
+    byte field398_0x217;
+    byte field399_0x218;
+    undefined field400_0x219;
+    undefined field401_0x21a;
+    undefined field402_0x21b;
+};
+
+struct Handlung {
+    byte maybe_id;
+    undefined field1_0x1;
+    undefined field2_0x2;
+    undefined field3_0x3;
+    int field4_0x4;
+    ushort charater_index;
+    undefined field6_0xa;
+    undefined field7_0xb;
+    undefined field8_0xc;
+    undefined field9_0xd;
+    undefined field10_0xe;
+    undefined field11_0xf;
+    int field12_0x10;
+    undefined field13_0x14;
+    undefined field14_0x15;
+    undefined field15_0x16;
+    undefined field16_0x17;
+    undefined field17_0x18;
+    undefined field18_0x19;
+    undefined field19_0x1a;
+    undefined field20_0x1b;
+    undefined field21_0x1c;
+    undefined field22_0x1d;
+    undefined field23_0x1e;
+    undefined field24_0x1f;
+    undefined field25_0x20;
+    undefined field26_0x21;
+    undefined field27_0x22;
+    undefined field28_0x23;
+    undefined field29_0x24;
+    undefined field30_0x25;
+    undefined field31_0x26;
+    undefined field32_0x27;
+    undefined field33_0x28;
+    undefined field34_0x29;
+    undefined field35_0x2a;
+    undefined field36_0x2b;
+    undefined field37_0x2c;
+    undefined field38_0x2d;
+    undefined field39_0x2e;
+    undefined field40_0x2f;
+    undefined field41_0x30;
+    undefined field42_0x31;
+    undefined field43_0x32;
+    undefined field44_0x33;
+    undefined field45_0x34;
+    undefined field46_0x35;
+    undefined field47_0x36;
+    undefined field48_0x37;
+    undefined field49_0x38;
+    undefined field50_0x39;
+    undefined field51_0x3a;
+    undefined field52_0x3b;
+    undefined field53_0x3c;
+    undefined field54_0x3d;
+    undefined field55_0x3e;
+    undefined field56_0x3f;
+    undefined field57_0x40;
+    undefined field58_0x41;
+    undefined field59_0x42;
+    undefined field60_0x43;
+    undefined field61_0x44;
+    undefined field62_0x45;
+    undefined field63_0x46;
+    undefined field64_0x47;
+    undefined field65_0x48;
+    undefined field66_0x49;
+    undefined field67_0x4a;
+    undefined field68_0x4b;
+    undefined field69_0x4c;
+    undefined field70_0x4d;
+    undefined field71_0x4e;
+    undefined field72_0x4f;
+    undefined field73_0x50;
+    undefined field74_0x51;
+    undefined field75_0x52;
+    undefined field76_0x53;
+    undefined field77_0x54;
+    undefined field78_0x55;
+    undefined field79_0x56;
+    undefined field80_0x57;
+    undefined field81_0x58;
+    undefined field82_0x59;
+    undefined field83_0x5a;
+    undefined field84_0x5b;
+    undefined field85_0x5c;
+    undefined field86_0x5d;
+    undefined field87_0x5e;
+    undefined field88_0x5f;
+    undefined field89_0x60;
+    undefined field90_0x61;
+    undefined field91_0x62;
+    undefined field92_0x63;
+    undefined field93_0x64;
+    undefined field94_0x65;
+    undefined field95_0x66;
+    undefined field96_0x67;
+    undefined field97_0x68;
+    undefined field98_0x69;
+    undefined field99_0x6a;
+    undefined field100_0x6b;
+    undefined field101_0x6c;
+    undefined field102_0x6d;
+    undefined field103_0x6e;
+    undefined field104_0x6f;
+    int some_state_maybe;
+    undefined field106_0x74;
+    undefined field107_0x75;
+    undefined field108_0x76;
+    undefined field109_0x77;
+    byte field110_0x78;
+    undefined field111_0x79;
+    undefined field112_0x7a;
+    undefined field113_0x7b;
+    undefined * unknown_ptr;
+    undefined field115_0x80;
+    undefined field116_0x81;
+    undefined field117_0x82;
+    undefined field118_0x83;
+    undefined field119_0x84;
+    undefined field120_0x85;
+    undefined field121_0x86;
+    undefined field122_0x87;
+    undefined field123_0x88;
+    undefined field124_0x89;
+    undefined field125_0x8a;
+    undefined field126_0x8b;
+    undefined field127_0x8c;
+    undefined field128_0x8d;
+    undefined field129_0x8e;
+    undefined field130_0x8f;
+    undefined field131_0x90;
+    undefined field132_0x91;
+    undefined field133_0x92;
+    undefined field134_0x93;
+    undefined field135_0x94;
+    undefined field136_0x95;
+    undefined field137_0x96;
+    undefined field138_0x97;
+    undefined field139_0x98;
+    undefined field140_0x99;
+    undefined field141_0x9a;
+    undefined field142_0x9b;
+    undefined field143_0x9c;
+    undefined field144_0x9d;
+    undefined field145_0x9e;
+    undefined field146_0x9f;
+    undefined field147_0xa0;
+    undefined field148_0xa1;
+    undefined field149_0xa2;
+    undefined field150_0xa3;
+    undefined field151_0xa4;
+    undefined field152_0xa5;
+    undefined field153_0xa6;
+    undefined field154_0xa7;
+    undefined field155_0xa8;
+    undefined field156_0xa9;
+    undefined field157_0xaa;
+    undefined field158_0xab;
+    ushort id_or_index_of_different_size;
+    undefined field160_0xae;
+    undefined field161_0xaf;
+    undefined4 field162_0xb0;
+    undefined4 field163_0xb4;
+    int building_id;
+    int some_object_id;
+    int object_id;
+    float float_again;
+    undefined field168_0xc8;
+    undefined field169_0xc9;
+    undefined field170_0xca;
+    undefined field171_0xcb;
+    float another_float;
+    undefined field173_0xd0;
+    undefined field174_0xd1;
+    undefined field175_0xd2;
+    undefined field176_0xd3;
+    float some_float;
+    undefined field178_0xd8;
+    undefined field179_0xd9;
+    undefined field180_0xda;
+    undefined field181_0xdb;
+    undefined field182_0xdc;
+    undefined field183_0xdd;
+    undefined field184_0xde;
+    undefined field185_0xdf;
+    undefined field186_0xe0;
+    undefined field187_0xe1;
+    undefined field188_0xe2;
+    undefined field189_0xe3;
+    undefined field190_0xe4;
+    undefined field191_0xe5;
+    undefined field192_0xe6;
+    undefined field193_0xe7;
+    undefined field194_0xe8;
+    undefined field195_0xe9;
+    undefined field196_0xea;
+    undefined field197_0xeb;
+    undefined field198_0xec;
+    undefined field199_0xed;
+    undefined field200_0xee;
+    undefined field201_0xef;
+    undefined field202_0xf0;
+    undefined field203_0xf1;
+    undefined field204_0xf2;
+    undefined field205_0xf3;
+    undefined field206_0xf4;
+    undefined field207_0xf5;
+    undefined field208_0xf6;
+    undefined field209_0xf7;
+    undefined field210_0xf8;
+    undefined field211_0xf9;
+    undefined field212_0xfa;
+    undefined field213_0xfb;
+    undefined field214_0xfc;
+    undefined field215_0xfd;
+    undefined field216_0xfe;
+    undefined field217_0xff;
+    undefined field218_0x100;
+    undefined field219_0x101;
+    undefined field220_0x102;
+    undefined field221_0x103;
+    undefined field222_0x104;
+    undefined field223_0x105;
+    undefined field224_0x106;
+    undefined field225_0x107;
+    undefined field226_0x108;
+    undefined field227_0x109;
+    undefined field228_0x10a;
+    undefined field229_0x10b;
+    undefined field230_0x10c;
+    undefined field231_0x10d;
+    undefined field232_0x10e;
+    undefined field233_0x10f;
+    undefined field234_0x110;
+    undefined field235_0x111;
+    undefined field236_0x112;
+    undefined field237_0x113;
+    undefined field238_0x114;
+    undefined field239_0x115;
+    undefined field240_0x116;
+    undefined field241_0x117;
+    undefined field242_0x118;
+    undefined field243_0x119;
+    undefined field244_0x11a;
+    undefined field245_0x11b;
+    undefined field246_0x11c;
+    undefined field247_0x11d;
+    undefined field248_0x11e;
+    undefined field249_0x11f;
+    undefined field250_0x120;
+    undefined field251_0x121;
+    undefined field252_0x122;
+    undefined field253_0x123;
+    undefined field254_0x124;
+    undefined field255_0x125;
+    undefined field256_0x126;
+    undefined field257_0x127;
+    undefined field258_0x128;
+    undefined field259_0x129;
+    undefined field260_0x12a;
+    undefined field261_0x12b;
+    undefined field262_0x12c;
+    undefined field263_0x12d;
+    undefined field264_0x12e;
+    undefined field265_0x12f;
+    undefined field266_0x130;
+    undefined field267_0x131;
+    undefined field268_0x132;
+    undefined field269_0x133;
+    undefined field270_0x134;
+    undefined field271_0x135;
+    undefined field272_0x136;
+    undefined field273_0x137;
+    undefined field274_0x138;
+    undefined field275_0x139;
+    undefined field276_0x13a;
+    undefined field277_0x13b;
+    undefined field278_0x13c;
+    undefined field279_0x13d;
+    undefined field280_0x13e;
+    undefined field281_0x13f;
+    undefined field282_0x140;
+    undefined field283_0x141;
+    undefined field284_0x142;
+    undefined field285_0x143;
+    undefined field286_0x144;
+    undefined field287_0x145;
+    undefined field288_0x146;
+    undefined field289_0x147;
+    undefined field290_0x148;
+    undefined field291_0x149;
+    undefined field292_0x14a;
+    undefined field293_0x14b;
 };
 
 typedef struct CutScene CutScene, *PCutScene;
@@ -8931,322 +10055,826 @@ struct CutScene {
     undefined field197_0x113;
 };
 
-typedef struct Handlung Handlung, *PHandlung;
+typedef struct MaterialPriceInfo MaterialPriceInfo, *PMaterialPriceInfo;
 
-struct Handlung {
-    byte maybe_id;
-    undefined field1_0x1;
-    undefined field2_0x2;
-    undefined field3_0x3;
-    int field4_0x4;
-    short field5_0x8;
-    undefined field6_0xa;
-    undefined field7_0xb;
-    undefined field8_0xc;
-    undefined field9_0xd;
-    undefined field10_0xe;
-    undefined field11_0xf;
-    int field12_0x10;
-    undefined field13_0x14;
-    undefined field14_0x15;
-    undefined field15_0x16;
-    undefined field16_0x17;
-    undefined field17_0x18;
-    undefined field18_0x19;
-    undefined field19_0x1a;
-    undefined field20_0x1b;
-    undefined field21_0x1c;
-    undefined field22_0x1d;
-    undefined field23_0x1e;
-    undefined field24_0x1f;
-    undefined field25_0x20;
-    undefined field26_0x21;
-    undefined field27_0x22;
-    undefined field28_0x23;
-    undefined field29_0x24;
-    undefined field30_0x25;
-    undefined field31_0x26;
-    undefined field32_0x27;
-    undefined field33_0x28;
-    undefined field34_0x29;
-    undefined field35_0x2a;
-    undefined field36_0x2b;
-    undefined field37_0x2c;
-    undefined field38_0x2d;
-    undefined field39_0x2e;
-    undefined field40_0x2f;
-    undefined field41_0x30;
-    undefined field42_0x31;
-    undefined field43_0x32;
-    undefined field44_0x33;
-    undefined field45_0x34;
-    undefined field46_0x35;
-    undefined field47_0x36;
-    undefined field48_0x37;
-    undefined field49_0x38;
-    undefined field50_0x39;
-    undefined field51_0x3a;
-    undefined field52_0x3b;
-    undefined field53_0x3c;
-    undefined field54_0x3d;
-    undefined field55_0x3e;
-    undefined field56_0x3f;
-    undefined field57_0x40;
-    undefined field58_0x41;
-    undefined field59_0x42;
-    undefined field60_0x43;
-    undefined field61_0x44;
-    undefined field62_0x45;
-    undefined field63_0x46;
-    undefined field64_0x47;
-    undefined field65_0x48;
-    undefined field66_0x49;
-    undefined field67_0x4a;
-    undefined field68_0x4b;
-    undefined field69_0x4c;
-    undefined field70_0x4d;
-    undefined field71_0x4e;
-    undefined field72_0x4f;
-    undefined field73_0x50;
-    undefined field74_0x51;
-    undefined field75_0x52;
-    undefined field76_0x53;
-    undefined field77_0x54;
-    undefined field78_0x55;
-    undefined field79_0x56;
-    undefined field80_0x57;
-    undefined field81_0x58;
-    undefined field82_0x59;
-    undefined field83_0x5a;
-    undefined field84_0x5b;
-    undefined field85_0x5c;
-    undefined field86_0x5d;
-    undefined field87_0x5e;
-    undefined field88_0x5f;
-    undefined field89_0x60;
-    undefined field90_0x61;
-    undefined field91_0x62;
-    undefined field92_0x63;
-    undefined field93_0x64;
-    undefined field94_0x65;
-    undefined field95_0x66;
-    undefined field96_0x67;
-    undefined field97_0x68;
-    undefined field98_0x69;
-    undefined field99_0x6a;
-    undefined field100_0x6b;
-    undefined field101_0x6c;
-    undefined field102_0x6d;
-    undefined field103_0x6e;
-    undefined field104_0x6f;
-    undefined field105_0x70;
-    undefined field106_0x71;
-    undefined field107_0x72;
-    undefined field108_0x73;
-    undefined field109_0x74;
-    undefined field110_0x75;
-    undefined field111_0x76;
-    undefined field112_0x77;
-    byte field113_0x78;
-    undefined field114_0x79;
-    undefined field115_0x7a;
-    undefined field116_0x7b;
-    undefined field117_0x7c;
-    undefined field118_0x7d;
-    undefined field119_0x7e;
-    undefined field120_0x7f;
-    undefined field121_0x80;
-    undefined field122_0x81;
-    undefined field123_0x82;
-    undefined field124_0x83;
-    undefined field125_0x84;
-    undefined field126_0x85;
-    undefined field127_0x86;
-    undefined field128_0x87;
-    undefined field129_0x88;
-    undefined field130_0x89;
-    undefined field131_0x8a;
-    undefined field132_0x8b;
-    undefined field133_0x8c;
-    undefined field134_0x8d;
-    undefined field135_0x8e;
-    undefined field136_0x8f;
-    undefined field137_0x90;
-    undefined field138_0x91;
-    undefined field139_0x92;
-    undefined field140_0x93;
-    undefined field141_0x94;
-    undefined field142_0x95;
-    undefined field143_0x96;
-    undefined field144_0x97;
-    undefined field145_0x98;
-    undefined field146_0x99;
-    undefined field147_0x9a;
-    undefined field148_0x9b;
-    undefined field149_0x9c;
-    undefined field150_0x9d;
-    undefined field151_0x9e;
-    undefined field152_0x9f;
-    undefined field153_0xa0;
-    undefined field154_0xa1;
-    undefined field155_0xa2;
-    undefined field156_0xa3;
-    undefined field157_0xa4;
-    undefined field158_0xa5;
-    undefined field159_0xa6;
-    undefined field160_0xa7;
-    undefined field161_0xa8;
-    undefined field162_0xa9;
-    undefined field163_0xaa;
-    undefined field164_0xab;
-    int object_id;
-    undefined4 field166_0xb0;
-    undefined4 field167_0xb4;
-    undefined field168_0xb8;
-    undefined field169_0xb9;
-    undefined field170_0xba;
-    undefined field171_0xbb;
-    int field172_0xbc;
-    undefined field173_0xc0;
-    undefined field174_0xc1;
-    undefined field175_0xc2;
-    undefined field176_0xc3;
-    undefined field177_0xc4;
-    undefined field178_0xc5;
-    undefined field179_0xc6;
-    undefined field180_0xc7;
-    undefined field181_0xc8;
-    undefined field182_0xc9;
-    undefined field183_0xca;
-    undefined field184_0xcb;
-    undefined field185_0xcc;
-    undefined field186_0xcd;
-    undefined field187_0xce;
-    undefined field188_0xcf;
-    undefined field189_0xd0;
-    undefined field190_0xd1;
-    undefined field191_0xd2;
-    undefined field192_0xd3;
-    undefined field193_0xd4;
-    undefined field194_0xd5;
-    undefined field195_0xd6;
-    undefined field196_0xd7;
-    undefined field197_0xd8;
-    undefined field198_0xd9;
-    undefined field199_0xda;
-    undefined field200_0xdb;
-    undefined field201_0xdc;
-    undefined field202_0xdd;
-    undefined field203_0xde;
-    undefined field204_0xdf;
-    undefined field205_0xe0;
-    undefined field206_0xe1;
-    undefined field207_0xe2;
-    undefined field208_0xe3;
-    undefined field209_0xe4;
-    undefined field210_0xe5;
-    undefined field211_0xe6;
-    undefined field212_0xe7;
-    undefined field213_0xe8;
-    undefined field214_0xe9;
-    undefined field215_0xea;
-    undefined field216_0xeb;
-    undefined field217_0xec;
-    undefined field218_0xed;
-    undefined field219_0xee;
-    undefined field220_0xef;
-    undefined field221_0xf0;
-    undefined field222_0xf1;
-    undefined field223_0xf2;
-    undefined field224_0xf3;
-    undefined field225_0xf4;
-    undefined field226_0xf5;
-    undefined field227_0xf6;
-    undefined field228_0xf7;
-    undefined field229_0xf8;
-    undefined field230_0xf9;
-    undefined field231_0xfa;
-    undefined field232_0xfb;
-    undefined field233_0xfc;
-    undefined field234_0xfd;
-    undefined field235_0xfe;
-    undefined field236_0xff;
-    undefined field237_0x100;
-    undefined field238_0x101;
-    undefined field239_0x102;
-    undefined field240_0x103;
-    undefined field241_0x104;
-    undefined field242_0x105;
-    undefined field243_0x106;
-    undefined field244_0x107;
-    undefined field245_0x108;
-    undefined field246_0x109;
-    undefined field247_0x10a;
-    undefined field248_0x10b;
-    undefined field249_0x10c;
-    undefined field250_0x10d;
-    undefined field251_0x10e;
-    undefined field252_0x10f;
-    undefined field253_0x110;
-    undefined field254_0x111;
-    undefined field255_0x112;
-    undefined field256_0x113;
-    undefined field257_0x114;
-    undefined field258_0x115;
-    undefined field259_0x116;
-    undefined field260_0x117;
-    undefined field261_0x118;
-    undefined field262_0x119;
-    undefined field263_0x11a;
-    undefined field264_0x11b;
-    undefined field265_0x11c;
-    undefined field266_0x11d;
-    undefined field267_0x11e;
-    undefined field268_0x11f;
-    undefined field269_0x120;
-    undefined field270_0x121;
-    undefined field271_0x122;
-    undefined field272_0x123;
-    undefined field273_0x124;
-    undefined field274_0x125;
-    undefined field275_0x126;
-    undefined field276_0x127;
-    undefined field277_0x128;
-    undefined field278_0x129;
-    undefined field279_0x12a;
-    undefined field280_0x12b;
-    undefined field281_0x12c;
-    undefined field282_0x12d;
-    undefined field283_0x12e;
-    undefined field284_0x12f;
-    undefined field285_0x130;
-    undefined field286_0x131;
-    undefined field287_0x132;
-    undefined field288_0x133;
-    undefined field289_0x134;
-    undefined field290_0x135;
-    undefined field291_0x136;
-    undefined field292_0x137;
-    undefined field293_0x138;
-    undefined field294_0x139;
-    undefined field295_0x13a;
-    undefined field296_0x13b;
-    undefined field297_0x13c;
-    undefined field298_0x13d;
-    undefined field299_0x13e;
-    undefined field300_0x13f;
-    undefined field301_0x140;
-    undefined field302_0x141;
-    undefined field303_0x142;
-    undefined field304_0x143;
-    undefined field305_0x144;
-    undefined field306_0x145;
-    undefined field307_0x146;
-    undefined field308_0x147;
-    undefined field309_0x148;
-    undefined field310_0x149;
-    undefined field311_0x14a;
-    undefined field312_0x14b;
+typedef enum OBJECT_PROTOTYPE_4 {
+    OBJ_NULL=0,
+    OBJ_KANALISATION=1,
+    OBJ_BRENNESSELN=2,
+    OBJ_EISENTUER=3,
+    OBJ_OFFENES_FEUER=4,
+    OBJ_KAMIN=5,
+    OBJ_VERTAEFELUNG=6,
+    OBJ_TAPETEN=7,
+    OBJ_PORTAL=8,
+    OBJ_SEKRETARIAT=9,
+    OBJ_WINTERGARTEN=10,
+    OBJ_PERSONALTRAKT=11,
+    OBJ_EINFRIEDUNG=12,
+    OBJ_RASEN=13,
+    OBJ_HECKEN=14,
+    OBJ_STATUEN=15,
+    OBJ_SPRINGBRUNNEN=16,
+    OBJ_PAVILLON=17,
+    OBJ_WOHN_UND_SCHLAFRAUM=18,
+    OBJ_ARBEITSZIMMER=19,
+    OBJ_HINTERZIMMER=20,
+    OBJ_BIBLIOTHEK=21,
+    OBJ_WEINKELLER=22,
+    OBJ_SALON=23,
+    OBJ_MUSIKZIMMER=24,
+    OBJ_STROHMATTE=25,
+    OBJ_HOLZBETT=26,
+    OBJ_SCHREIBPULT=27,
+    OBJ_KERZE=28,
+    OBJ_OELLAMPE=29,
+    OBJ_SCRIPTORIUMSLEUCHTER=30,
+    OBJ_LAGERHAUS_ARBEITSRAUM=31,
+    OBJ_FLASCHENZUG=32,
+    OBJ_PEITSCHE=33,
+    OBJ_STOCK_MIT_KAROTTE=34,
+    OBJ_DEICHSEL_EINSPAENNIG=35,
+    OBJ_DEICHSEL_ZWEISPAENNIG=36,
+    OBJ_DEICHSEL_VIERSPAENNIG=37,
+    OBJ_AXTSTAENDER=38,
+    OBJ_SAEGEWERK=39,
+    OBJ_WURZELHACKE=40,
+    OBJ_ZWEIMANNSAEGE=41,
+    OBJ_LAGERFLAECHE=42,
+    OBJ_PLANE=43,
+    OBJ_ARBEITERHUETTE=44,
+    OBJ_VORARBEITERHUETTE=45,
+    OBJ_GELDSCHRANK=46,
+    OBJ_STEINKARRE=47,
+    OBJ_BAUGERUEST=48,
+    OBJ_HEBEKRAN=49,
+    OBJ_PERSONALBUCH=50,
+    OBJ_SOELDNERHUETTE=51,
+    OBJ_ZIELSCHEIBE=52,
+    OBJ_STROHPUPPE=53,
+    OBJ_GRUBENBELEUCHTUNG=54,
+    OBJ_MINENSTOLLEN=55,
+    OBJ_STUETZBALKEN=56,
+    OBJ_GRUBENHUNDEKAEFIG=57,
+    OBJ_LORE=58,
+    OBJ_ZIEGELFORM=59,
+    OBJ_ZIEGELBRENNOFEN=60,
+    OBJ_KOELNISCHE_MARK=61,
+    OBJ_TALER=62,
+    OBJ_GULDEN=63,
+    OBJ_DUKAT=64,
+    OBJ_PFUND_PFENNIGE=65,
+    OBJ_LIVRE_TOURNOIS=66,
+    OBJ_FRANC=67,
+    OBJ_MARK_LUEBISCH=68,
+    OBJ_PFUND=69,
+    OBJ_FLORINT=70,
+    OBJ_SOVEREIGN=71,
+    OBJ_UNITE=72,
+    OBJ_GUINEE=73,
+    OBJ_LIRA_GROSSORUM=74,
+    OBJ_VENEZISCHER_DUKAT=75,
+    OBJ_DOLLAR=76,
+    OBJ_DIEBESGILDE_GANGSYSTEM=77,
+    OBJ_ABSTUETZBALKEN=78,
+    OBJ_VERMAUERUNG=79,
+    OBJ_HORCHPOSTEN=80,
+    OBJ_TAEUSCHUNGS_TRUHE=81,
+    OBJ_ILLUSIONSWAND=82,
+    OBJ_FALLE=83,
+    OBJ_DIEBESGILDE_AUFENTHALTSRAUM=84,
+    OBJ_WEINFASS=85,
+    OBJ_LAGERFEUER=86,
+    OBJ_VORHANG_FUER_CHEF=87,
+    OBJ_MITARBEITER_DES_MONATS=88,
+    OBJ_SEKRETAER_AUFSATZ=89,
+    OBJ_DIEBES_BRIEFPAPIER=90,
+    OBJ_INFORMATIONSPERGAMENT=91,
+    OBJ_DIEBESGILDE_LAGERRAUM=92,
+    OBJ_INNENRAUM_BRUNNEN=93,
+    OBJ_HEILBRUNNEN=94,
+    OBJ_SCHATZTRUHE=95,
+    OBJ_DIEBESGILDE_TRAININGSRAUM=96,
+    OBJ_KUGEL_UND_PULVER_SAECKCHEN=97,
+    OBJ_PULVERFASS=98,
+    OBJ_KOSTUEMTRUHE=99,
+    OBJ_REGAL_GEDICHTBAENDE=100,
+    OBJ_DIEBESGILDE_GEFAENGNIS=101,
+    OBJ_PATRIZIERBETT=102,
+    OBJ_WACHTISCH=103,
+    OBJ_GITTER=104,
+    OBJ_KETTENFESSEL=105,
+    OBJ_FELDBETT=106,
+    OBJ_WASCHSCHUESSEL=107,
+    OBJ_FLUCHTGANG=108,
+    OBJ_MEISTERBRIEF=109,
+    OBJ_STROHLAGER=110,
+    OBJ_SCHILD_DIEBESGILDE=111,
+    OBJ_SCHILD_GEFAENGNIS=112,
+    OBJ_SCHILD_LAGERHAUS=113,
+    OBJ_SCHILD_STADTWACHE=114,
+    OBJ_SCHILD_SCHMIEDE=115,
+    OBJ_SCHMIEDE_ARBEITSRAUM=116,
+    OBJ_AMBOSS=117,
+    OBJ_SCHMIEDEHAMMER=118,
+    OBJ_ESSE=119,
+    OBJ_WASSERBOTTICH=120,
+    OBJ_SCHUERZE=121,
+    OBJ_ZANGE=122,
+    OBJ_GUSSFORM=123,
+    OBJ_GIESSKELLE=124,
+    OBJ_ENTGRATER=125,
+    OBJ_BESEN=126,
+    OBJ_BLASEBALG=127,
+    OBJ_SCHMIEDEOFEN=128,
+    OBJ_EISENSCHWAMM=129,
+    OBJ_EISENSCHNEIDER=130,
+    OBJ_VERSIEGELER=131,
+    OBJ_SCHILD_TISCHLER=132,
+    OBJ_TISCHLEREI_ARBEITSRAUM=133,
+    OBJ_MESSER=134,
+    OBJ_TISCHLERHAMMER=135,
+    OBJ_SAEGE=136,
+    OBJ_HOBEL=137,
+    OBJ_LEIMTOPF=138,
+    OBJ_SCHRAUBZWINGE=139,
+    OBJ_HOBELBANK=140,
+    OBJ_ZOLLSTOCK=141,
+    OBJ_LOT=142,
+    OBJ_FEILE=143,
+    OBJ_MECHANISCHE_SAEGE=144,
+    OBJ_MARKTPLATZ_ARBEITSRAUM=145,
+    OBJ_MARKTSTAND_TISCHLER_SCHMIEDE=146,
+    OBJ_MARKTSTAND_STEINMETZ_WIRT=147,
+    OBJ_MARKTSTAND_PARFUM_KRAEUTER=148,
+    OBJ_MARKTSTAND_ROHSTOFFE=149,
+    OBJ_MARKTSTAND_IMPORTEUR=150,
+    OBJ_MARKTSTAND_KIRCHE=151,
+    OBJ_SCHWARZES_BRETT=152,
+    OBJ_TRIBUENE=153,
+    OBJ_SCHILD_STEINMETZ=154,
+    OBJ_STEINMETZ_ARBEITSRAUM=155,
+    OBJ_HAMMER_UND_MEISSEL=156,
+    OBJ_MAURERKELLE=157,
+    OBJ_LEITER=158,
+    OBJ_WASSEREIMER=159,
+    OBJ_SCHUBKARRE=160,
+    OBJ_EISENBUERSTE=161,
+    OBJ_DRAHTSAEGE=162,
+    OBJ_KUEHLZUFLUSS=163,
+    OBJ_SCHILD_GELDLEIHE=164,
+    OBJ_GELDLEIHE_ARBEITSRAUM=165,
+    OBJ_FENSTERGITTER=166,
+    OBJ_GARDINE=167,
+    OBJ_BESUCHERSTUHL=168,
+    OBJ_BESUCHERSESSEL=169,
+    OBJ_WEINFLASCHE_UND_GLAESER=170,
+    OBJ_KASSE=171,
+    OBJ_EISENSCHRANK=172,
+    OBJ_WANDGEMAELDE=173,
+    OBJ_RICHTSCHWERT=174,
+    OBJ_RICHTAXT=175,
+    OBJ_GALGEN=176,
+    OBJ_KREUZ=177,
+    OBJ_SCHEITERHAUFEN=178,
+    OBJ_EXEKUTIONSKANONE=179,
+    OBJ_GUILLOTINE=180,
+    OBJ_LOGE=181,
+    OBJ_WAAGE=182,
+    OBJ_GEFAENGNIS_WACHRAUM=183,
+    OBJ_GEFANGENENLITERATUR=184,
+    OBJ_KERKERPLAN=185,
+    OBJ_GEFAENGNIS_ZELLE=186,
+    OBJ_GEFAENGNIS_FOLTERKAMMER=187,
+    OBJ_DAUMENSCHRAUBEN=188,
+    OBJ_SPANISCHE_STIEFEL=189,
+    OBJ_NEUNSCHWAENZIGE_PEITSCHE=190,
+    OBJ_ESSE_UND_BRANDEISEN=191,
+    OBJ_EISWASSERTROPFER=192,
+    OBJ_HAENGENDER_KAEFIG=193,
+    OBJ_STRECKBANK=194,
+    OBJ_BRUNNENEIMER_NORMAL=195,
+    OBJ_BRUNNENEIMER_EISEN=196,
+    OBJ_SCHWEINEMAGEN=197,
+    OBJ_KUHMAGEN=198,
+    OBJ_BRUNNENSEIL=199,
+    OBJ_BRUNNENKETTE=200,
+    OBJ_HEILIGENFIGUR=201,
+    OBJ_WEIHPLAKETTE_1=202,
+    OBJ_WEIHPLAKETTE_2=203,
+    OBJ_WEIHPLAKETTE_3=204,
+    OBJ_WEIHPLAKETTE_4=205,
+    OBJ_SCHILD_KRAEUTERLADEN=206,
+    OBJ_KRAEUTERLADEN_ARBEITSRAUM=207,
+    OBJ_KRAEUTERREGAL=208,
+    OBJ_SCHWERER_VORHANG=209,
+    OBJ_MEDIZINFAESSCHEN=210,
+    OBJ_VITRINE=211,
+    OBJ_TROCKENBUCH=212,
+    OBJ_MOERSER_UND_STEMPEL=213,
+    OBJ_KRAEUTERLADEN_LABOR=214,
+    OBJ_GIFTFAESSCHEN=215,
+    OBJ_SCHRAUBPRESSE=216,
+    OBJ_SUDERHITZER=217,
+    OBJ_CHEMIKALIENKASTEN=218,
+    OBJ_DESTILLIERKOLBEN=219,
+    OBJ_GEHEIMFACH=220,
+    OBJ_KRAEUTERLADEN_MODRIGER_KELLER=221,
+    OBJ_TEICH=222,
+    OBJ_FLIEGENGLAS=223,
+    OBJ_KLOAKENZUGANG=224,
+    OBJ_PILZKULTUR=225,
+    OBJ_DACHBALKEN=226,
+    OBJ_TERRARIUM=227,
+    OBJ_SCHILD_KIRCHE=228,
+    OBJ_KIRCHE_ARBEITSRAUM=229,
+    OBJ_KATHEDRALE_ARBEITSRAUM=230,
+    OBJ_KIRCHENKREUZ=231,
+    OBJ_SPENDENKAESTCHEN=232,
+    OBJ_WEIHWASSERBECKEN=233,
+    OBJ_HOLZBANK=234,
+    OBJ_POLSTERBANK=235,
+    OBJ_KANZEL=236,
+    OBJ_ALTAR=237,
+    OBJ_ORGEL=238,
+    OBJ_LICHTGADEN=239,
+    OBJ_KIRCHE_ALTARRAUM=240,
+    OBJ_MARIENBILD=241,
+    OBJ_KIRCHE_BEICHTSTUHLRAUM=242,
+    OBJ_KIRCHE_GLOCKENTURMRAUM=243,
+    OBJ_GLOCKE=244,
+    OBJ_EISENAUFHAENGUNG=245,
+    OBJ_GROSSE_GLOCKE=246,
+    OBJ_KIRCHE_SCRIPTORIUM=247,
+    OBJ_BUCHVITRINE=248,
+    OBJ_FARBENKASTEN=249,
+    OBJ_SETZKASTEN=250,
+    OBJ_MUSTERBUCH=251,
+    OBJ_DRUCKERPRESSE=252,
+    OBJ_AUSSEN_RAUM=253,
+    OBJ_ROHSTOFFVORKOMMEN=254,
+    OBJ_POTENTIAL=255,
+    OBJ_WILDSCHWEINSPIESS=256,
+    OBJ_RUMFASS=257,
+    OBJ_AUSGUCK=258,
+    OBJ_TARNUNG_ABZWEIGUNG=259,
+    OBJ_TARNUNG_TORBOGEN=260,
+    OBJ_ABWEHRSTELLUNG=261,
+    OBJ_AUSGUCK_UPGRADE=262,
+    OBJ_CHEFZELT=263,
+    OBJ_MASKE_DES_ZORRO=264,
+    OBJ_RAEUBERZELT=265,
+    OBJ_FLUCHTHUETTE=266,
+    OBJ_FLUCHTSEIL=267,
+    OBJ_SPROSSEN=268,
+    OBJ_RUTSCHE=269,
+    OBJ_RATHAUS_HALLE=270,
+    OBJ_MARMORWAPPEN=271,
+    OBJ_RATHAUS_SEKRETARIAT=272,
+    OBJ_GESETZBUCH_STRAFRECHT=273,
+    OBJ_GESETZBUCH_STEUERN=274,
+    OBJ_GESETZBUCH_VERFASSUNG=275,
+    OBJ_RATHAUS_SITZUNGSSAAL=276,
+    OBJ_STADTKASSE=277,
+    OBJ_LAGERFLAECHE_ALLGEMEIN=278,
+    OBJ_SCHILD_PARFUMEUR=279,
+    OBJ_PARFUMERIE_ARBEITSRAUM=280,
+    OBJ_PARFUMREGAL=281,
+    OBJ_MISCHGEFAESS=282,
+    OBJ_MESSBECHER=283,
+    OBJ_MOERSER=284,
+    OBJ_SPATEL=285,
+    OBJ_PIPETTE=286,
+    OBJ_SCHILD_WIRTSHAUS=287,
+    OBJ_WIRTSHAUS_ARBEITSRAUM=288,
+    OBJ_URKUNDE_SCHANKRECHT=289,
+    OBJ_URKUNDE_BRAURECHT=290,
+    OBJ_URKUNDE_DESTILLIERRECHT=291,
+    OBJ_LANGE_TISCHE=292,
+    OBJ_EINZELTISCHE=293,
+    OBJ_STUEHLE=294,
+    OBJ_SCHOENE_STUEHLE=295,
+    OBJ_HOLZGESCHIRR=296,
+    OBJ_EISENGESCHIRR=297,
+    OBJ_SILBERGESCHIRR=298,
+    OBJ_SPIELTISCH=299,
+    OBJ_DUNKLE_ECKE=300,
+    OBJ_STAMMTISCH=301,
+    OBJ_WIRTSHAUS_KELLER=302,
+    OBJ_BIERFASS=303,
+    OBJ_WEINREGAL=304,
+    OBJ_SCHNAPPSFAESSCHEN=305,
+    OBJ_BRAUANLAGE=306,
+    OBJ_DESTILLIERANLAGE=307,
+    OBJ_KARREN=308,
+    OBJ_KARREN_MITTEL=309,
+    OBJ_KARREN_GROSS=310,
+    OBJ_ZUNFTHAUS_HALLE=311,
+    OBJ_ZUNFTHAUS_SEKRETARIAT=312,
+    OBJ_ZUNFTHAUS_SITZUNGSSAAL=313,
+    OBJ_ZUNFTWAPPEN_PARFUMEURE=314,
+    OBJ_ZUNFTWAPPEN_SCHMIEDE=315,
+    OBJ_ZUNFTWAPPEN_STEINMETZ=316,
+    OBJ_ZUNFTWAPPEN_TISCHLER=317,
+    OBJ_ROTER_TEPPICH=318,
+    OBJ_SAEULEN=319,
+    OBJ_KARTENTISCH=320,
+    OBJ_GESETZ=321,
+    OBJ_ZUNFTKASSE=322,
+    OBJ_ZUNFTVITRINE=323,
+    OBJ_ZUNFTMEISTERBILD=324,
+    OBJ_STADTWACHE_MANNSCHAFTSRAUM=325,
+    OBJ_STADTWACHE_WACHZIMMER=326,
+    OBJ_ZOLLKASSE=327,
+    OBJ_ZOLLKASSE_MIT_GEHEIMFACH=328,
+    OBJ_SCHLACHTENGEMAELDE=329,
+    OBJ_WACHPLAN=330,
+    OBJ_SCHNAPPSVORRAT=331,
+    OBJ_STADTWACHE_WAFFENKAMMER=332,
+    OBJ_SCHWERTERREGAL=333,
+    OBJ_PISTOLENREGAL=334,
+    OBJ_KUGELSAECKCHEN=335,
+    OBJ_PULVERFASS_2=336,
+    OBJ_KANONENKUGELKISTE=337,
+    OBJ_KANONENHALTERUNG=338,
+    OBJ_GITTERSTANGEN_FENSTER=339,
+    OBJ_DOLCH=340,
+    OBJ_SILBERRING=341,
+    OBJ_RAPIER=342,
+    OBJ_SILBERKETTE=343,
+    OBJ_GROSSSCHWERT=344,
+    OBJ_GOLDKETTE=345,
+    OBJ_GUERTEL_DER_METAPHYSIK=346,
+    OBJ_GEHSTOCK=347,
+    OBJ_SCHUTZKREUZ=348,
+    OBJ_KAMM=349,
+    OBJ_PISTOLE=350,
+    OBJ_STAB_DES_EDELMANNS=351,
+    OBJ_ARMBRUST=352,
+    OBJ_SCHLEIFSTEIN=353,
+    OBJ_STEINKREISEL=354,
+    OBJ_STEINSOLDAT=355,
+    OBJ_SCHIEFERTAFEL=356,
+    OBJ_DIAMANT=357,
+    OBJ_GLUECKSSTEIN=358,
+    OBJ_GEDICHT=359,
+    OBJ_UEBER_TALENTE_I=360,
+    OBJ_HASSTIRADE=361,
+    OBJ_BRIEF_AUS_ROM=362,
+    OBJ_LAGERPLAN=363,
+    OBJ_UEBER_TALENTE_II=364,
+    OBJ_BLUME_DER_ZWIETRACHT=365,
+    OBJ_GIFTDOLCH=366,
+    OBJ_DARTAGNANS_DUFT=367,
+    OBJ_MOSCHUSDUFT=368,
+    OBJ_HEILGENDUFT=369,
+    OBJ_SCHATTENDOLCH=370,
+    OBJ_AUSDAUERTRANK=371,
+    OBJ_BOMBE=372,
+    OBJ_LEBENSELEXIR=373,
+    OBJ_TOPFGRANATE=374,
+    OBJ_KROETENSCHLEIM=375,
+    OBJ_UNKENDUNK=376,
+    OBJ_KOERNERMAHZEIT=377,
+    OBJ_DUENNBIER=378,
+    OBJ_STARKBIER=379,
+    OBJ_FAHNENBRAEU_PILSENER=380,
+    OBJ_SCHAEDELBRAND=381,
+    OBJ_KRAEUTERSCHNAPPS=382,
+    OBJ_VERHANDELN_MUENZE=383,
+    OBJ_VERHANDELN_MUENZSTAPEL=384,
+    OBJ_VERHANDELN_LEDERBEUTEL=385,
+    OBJ_VERHANDELN_DICKER_LEDERBEUTEL=386,
+    OBJ_VERHANDELN_EINFACHE_SCHATULLE=387,
+    OBJ_VERHANDELN_EDELSTEIN_SCHATULLE=388,
+    OBJ_HANDWERK_EINFACHER_HAMMER=389,
+    OBJ_HANDWERK_HOLZLINEAL=390,
+    OBJ_HANDWERK_LOT=391,
+    OBJ_HANDWERK_SCHOENE_WAAGE=392,
+    OBJ_HANDWERK_EDLE_BAUSKIZZE=393,
+    OBJ_HANDWERK_VERZIERTER_ZIRKEL=394,
+    OBJ_BNUN_SONNENSCHEIN=395,
+    OBJ_BNUN_NACHMITTAG=396,
+    OBJ_BNUN_DAEMMERUNG=397,
+    OBJ_BNUN_REGEN_DAEMMERUNG=398,
+    OBJ_BNUN_NACHT=399,
+    OBJ_BNUN_GEWITTER_NACHT=400,
+    OBJ_KAMPF_ROSTIGES_MESSER=401,
+    OBJ_KAMPF_DOLCH=402,
+    OBJ_KAMPF_VERZIERTER_DOLCH=403,
+    OBJ_KAMPF_EINFACHES_SCHWERT=404,
+    OBJ_KAMPF_VERZIERTER_RAPIER=405,
+    OBJ_KAMPF_RAPIER_EDELSTEIN=406,
+    OBJ_RHETORIK_NIEMAND=407,
+    OBJ_RHETORIK_EIN=408,
+    OBJ_RHETORIK_DREI=409,
+    OBJ_RHETORIK_EINIGE=410,
+    OBJ_RHETORIK_VIELE=411,
+    OBJ_RHETORIK_MASSEN=412,
+    OBJ_TALENTBUCH_VERHANDELN_1=413,
+    OBJ_TALENTBUCH_VERHANDELN_2=414,
+    OBJ_TALENTBUCH_VERHANDELN_3=415,
+    OBJ_TALENTBUCH_HANDWERK_1=416,
+    OBJ_TALENTBUCH_HANDWERK_2=417,
+    OBJ_TALENTBUCH_HANDWERK_3=418,
+    OBJ_TALENTBUCH_BNUN_1=419,
+    OBJ_TALENTBUCH_BNUN_2=420,
+    OBJ_TALENTBUCH_BNUN_3=421,
+    OBJ_TALENTBUCH_KAMPF_1=422,
+    OBJ_TALENTBUCH_KAMPF_2=423,
+    OBJ_TALENTBUCH_KAMPF_3=424,
+    OBJ_TALENTBUCH_RHETORIK_1=425,
+    OBJ_TALENTBUCH_RHETORIK_2=426,
+    OBJ_TALENTBUCH_RHETORIK_3=427,
+    OBJ_AMTSTRAEGER=428,
+    OBJ_RAT=429,
+    OBJ_GESETZ_AENDERN=430,
+    OBJ_MITGLIED_ANKLAGEN=431,
+    OBJ_MITGLIED_ABSETZEN=432,
+    OBJ_AMT_NIEDERLEGEN=433,
+    OBJ_AUSSCHUETTUNG_VORNEHMEN=434,
+    OBJ_FREIES_AMT=435,
+    OBJ_BEWERBUNG_AMT=436,
+    OBJ_THEMA_PREDIGT=437,
+    OBJ_MANUSKRIPT=438,
+    OBJ_KIEFER=439,
+    OBJ_BUCHE=440,
+    OBJ_EICHE=441,
+    OBJ_LEHM=442,
+    OBJ_GRANIT_ROH=443,
+    OBJ_SCHIEFER_ROH=444,
+    OBJ_EISENERZ_ROH=445,
+    OBJ_SILBERERZ_ROH=446,
+    OBJ_GOLDERZ_ROH=447,
+    OBJ_EDELSTEINE_ROH=448,
+    OBJ_KROETENAUGE=449,
+    OBJ_FLEDERMAUSBLUT=450,
+    OBJ_SPINNENBEIN=451,
+    OBJ_LAVENDEL=452,
+    OBJ_JASMIN=453,
+    OBJ_ROSE=454,
+    OBJ_MOSCHUS=455,
+    OBJ_GERSTE=456,
+    OBJ_ROGGEN=457,
+    OBJ_KIEFERNBRETT=458,
+    OBJ_BUCHENBRETT=459,
+    OBJ_EICHENBRETT=460,
+    OBJ_ZIEGEL=461,
+    OBJ_GRANIT=462,
+    OBJ_SCHIEFER=463,
+    OBJ_EISEN=464,
+    OBJ_SILBER=465,
+    OBJ_GOLD=466,
+    OBJ_EDELSTEIN=467,
+    OBJ_BESCHLAG=468,
+    OBJ_ZAPFEN=469,
+    OBJ_SCHLEIFPAPIER=470,
+    OBJ_POLITUR=471,
+    OBJ_FARBE=472,
+    OBJ_WEINGEIST=473,
+    OBJ_PAPIER=474,
+    OBJ_IMPORTLAGER=475,
+    OBJ_EXPORTLAGER=476,
+    OBJ_LAGERFLAECHE_TRANSPORT=477,
+    OBJ_STOLPERSEIL=478,
+    OBJ_FENSTERLAEDEN=479,
+    OBJ_DORNENHECKE=480,
+    OBJ_ROSENSTRAUCH=481,
+    OBJ_FALLGRUBE=482,
+    OBJ_ROSTNAEGEL=483,
+    OBJ_TUERRIEGEL=484,
+    OBJ_VERGISSMICH_KRAUT=485,
+    OBJ_DUFT_DER_WEITEN_WELT=486,
+    OBJ_HELLEBARDE_UND_SCHEMEL=487,
+    OBJ_HOLZSPLITTER=488,
+    OBJ_INSTABILE_STEINHAUFEN=489,
+    OBJ_SCHARFE_EISENTEILE=490,
+    OBJ_KNOBLAUCHZEHEN=491,
+    OBJ_GIFTSTRAUCH=492,
+    OBJ_WACHHUND=493,
+    OBJ_SCHWARZE_KATZE=494,
+    OBJ_WACHHUNDTRAINING=495,
+    OBJ_KATZENDRESSUR=496,
+    OBJ_FINGER_DES_HERRN=497,
+    OBJ_HANDWERKSSCHILD_FRIEDHOF=498,
+    OBJ_GRAEBERFELD=499,
+    OBJ_STEINKREIS=500,
+    OBJ_LIEGEPLAN=501,
+    OBJ_GRABHUEGEL=502,
+    OBJ_FRIEDHOFSHECKEN=503,
+    OBJ_KOMPOSTHAUFEN=504,
+    OBJ_GRAEBER_KLEIN=505,
+    OBJ_FRIEDHOFSTOR=506,
+    OBJ_ENGELSSTATUE=507,
+    OBJ_GARGOYLENKOPF=508,
+    OBJ_GRAEBER_MITTEL=509,
+    OBJ_FRIEDHOFSSTATUEN=510,
+    OBJ_STEINKREIS_DRUDENFUSS=511,
+    OBJ_KNORRIGER_BAUM=512,
+    OBJ_GRUFT=513,
+    OBJ_FRIEDHOFSBANK=514,
+    OBJ_GEHILFENKONTROLLE=515,
+    OBJ_RUINEN=516,
+    OBJ_FRIEDHOFSKAPELLE=517,
+    OBJ_FRIEDHOFSSCHAUFEL_UND_EIMER=518,
+    OBJ_KNOCHENHAMMER=519,
+    OBJ_SANDUHR=520,
+    OBJ_SEZIERMESSER=521,
+    OBJ_URNEN=522,
+    OBJ_OPFERSTEIN=523,
+    OBJ_IKONENSCHREIN=524,
+    OBJ_KAPELLENALTAR=525,
+    OBJ_ABGEHAENGTES_KREUZ=526,
+    OBJ_SANDRELIEF=527,
+    OBJ_FRIEDHOFSLEUCHTER=528,
+    OBJ_NEKROMANTENTURM=529,
+    OBJ_EXPERIMENTIERTISCH=530,
+    OBJ_LEDERGURTE=531,
+    OBJ_BILDNIS_DES_LEBENS=532,
+    OBJ_GEWITTER_FOKUSSIERER=533,
+    OBJ_BALSAMIERKIT=534,
+    OBJ_LIEBESGESTIRNE=535,
+    OBJ_OKULAR=536,
+    OBJ_BLUME_IN_STEINMUND=537,
+    OBJ_RABENFIGURINE=538,
+    OBJ_KRYPTA=539,
+    OBJ_SEANCEKREIS=540,
+    OBJ_KOHLEBECKEN=541,
+    OBJ_URNENREGAL=542,
+    OBJ_SCHUTZZEICHEN=543,
+    OBJ_SPINNENNETZ=544,
+    OBJ_VERSTEINERTER_GEHILFE=545,
+    OBJ_MECHANISCHER_GEIST=546,
+    OBJ_BILDNIS_DES_VATERS=547,
+    OBJ_GEHEIMES_GRAB=548,
+    OBJ_KNOCHEN=549,
+    OBJ_SCHAEDEL=550,
+    OBJ_LEICHENHEMD=551,
+    OBJ_ECTOPLASMA=552,
+    OBJ_KNOCHENARMREIF=553,
+    OBJ_SCHAEDELKERZE=554,
+    OBJ_HEXERDOKUMENT_I=555,
+    OBJ_DUNKLER_VERFALL=556,
+    OBJ_HEXERDOKUMENT_II=557,
+    OBJ_NEKROMANTENROBE=558,
+    OBJ_STALLUNGEN=559,
+    OBJ_EISENTUEREN=560,
+    OBJ_SPIESSE=561,
+    OBJ_REGENTONNE=562,
+    OBJ_WACHHAUS=563,
+    OBJ_EISENBAENDER=564,
+    OBJ_HOFBRUNNEN=565,
+    OBJ_SCHLOSSFALLEN=566,
+    OBJ_FUNDAMENTVERSTAERKUNG=567,
+    OBJ_ZISTERNE=568,
+    OBJ_WEHRGANG=569,
+    OBJ_MAUERVORBAUTEN=570,
+    OBJ_SCHAUFELAUFZUG=571,
+    OBJ_KONTOR=572,
+    OBJ_KAMINSTELLE=573,
+    OBJ_JOURNAL=574,
+    OBJ_DER_KNOGGE=575,
+    OBJ_STEINGEWICHTE_AM_BAND=576,
+    OBJ_WANNENBAD=577,
+    OBJ_ERFOLGSCHART=578,
+    OBJ_WAPPENSAMMLUNG=579,
+    OBJ_EISENGEWICHTESTANGE=580,
+    OBJ_WANNENVORLEGER=581,
+    OBJ_SCHIFFSMODELL_AUS_VENEDIG=582,
+    OBJ_KAMPFMASCHINE=583,
+    OBJ_WANDTEPPICHE=584,
+    OBJ_INTRIGENABWEHR_I_BIS_IV=585,
+    OBJ_DUFTOELZULEITUNG=586,
+    OBJ_ALCHIMISTENKAMMER=587,
+    OBJ_ALCHIMISTENVERTRAG=588,
+    OBJ_OHRENSESSEL=589,
+    OBJ_SCHUTZBRILLE=590,
+    OBJ_SCHMUSEKATZE=591,
+    OBJ_FUSSBANK=592,
+    OBJ_VENTILKONSTRUKTION=593,
+    OBJ_SUESSWERKKISTE=594,
+    OBJ_WASSERPFEIFE=595,
+    OBJ_RAUCHABZUG=596,
+    OBJ_ZUBERSPUELUNG=597,
+    OBJ_KANONENTURM=598,
+    OBJ_STEINKUGEL=599,
+    OBJ_EINFACHE_KANONE=600,
+    OBJ_SCHWARZPULVERLADUNG=601,
+    OBJ_EISENKUGEL=602,
+    OBJ_LANGES_ROHR=603,
+    OBJ_KIMME_UND_KORN=604,
+    OBJ_KANLLGASBEHAELTER=605,
+    OBJ_SCHRAPPNELL=606,
+    OBJ_GEZOGENER_LAUF=607,
+    OBJ_FADENKREUZ=608,
+    OBJ_MELONITLADUNG=609,
+    OBJ_HUNDERT_PFUENDER=610,
+    OBJ_DOPPELKANONE=611,
+    OBJ_KARTAESCHE=612,
+    OBJ_DREIFACHKANONE=613,
+    OBJ_GEHEIMKABINETT=614,
+    OBJ_TANZBAERENKAEFIG=615,
+    OBJ_WEINVORRAT=616,
+    OBJ_LEIER=617,
+    OBJ_TANZBAER=618,
+    OBJ_SCHLINGENFALLE=619,
+    OBJ_LAGERFEUER_DER_ZIGEUNER=620,
+    OBJ_GEDICHTLESUNG_TRIBUENE=621,
+    OBJ_HUNDEZWINGER=622,
+    OBJ_INNEREIENFASS=623,
+    OBJ_HOCHSEIL=624,
+    OBJ_TRAUMFAENGER=625,
+    OBJ_NETZFALLE=626,
+    OBJ_BALDACHIN=627,
+    OBJ_STEIN_DER_STRAFE=628,
+    OBJ_FRATZENGESICHTER=629,
+    OBJ_AELTESTENWAGEN=630,
+    OBJ_ZIGEUNERSCHATULLE=631,
+    OBJ_SIPPENTEPPICH=632,
+    OBJ_BLUTDOLCH=633,
+    OBJ_SIPPENBILDNIS=634,
+    OBJ_SIPPENCHRONIK=635,
+    OBJ_AELTESTENHAUT=636,
+    OBJ_GLASAUGE_AUF_PODEST=637,
+    OBJ_SPUCKNAPF=638,
+    OBJ_ZIRKUSZELT=639,
+    OBJ_ZELTBUEHNE=640,
+    OBJ_SCHMINKTOEPFE=641,
+    OBJ_POKERTISCH=642,
+    OBJ_JONGLIERBAELLE=643,
+    OBJ_MANUSKRIPTSAMMLUNG=644,
+    OBJ_ZIGEUNER_SCHEMEL=645,
+    OBJ_TASCHENSPIELERKASTEN=646,
+    OBJ_KOSTUEMFUNDUS=647,
+    OBJ_LIEGEKISSEN=648,
+    OBJ_BUECHERSTAPEL=649,
+    OBJ_WAHRSAGERWAGEN=650,
+    OBJ_FEUERSTELLE=651,
+    OBJ_AUSGESTOPFTER_BAER=652,
+    OBJ_GLASKUGEL=653,
+    OBJ_FAULIGES_GEBISS=654,
+    OBJ_STERNENKARTE=655,
+    OBJ_KRISTALLKUGEL=656,
+    OBJ_KNOCHENFEUER=657,
+    OBJ_GIFTDOLCHSAMMLUNG=658,
+    OBJ_WEIDENHOLZ=659,
+    OBJ_HASE=660,
+    OBJ_VOGELBEERE=661,
+    OBJ_LEDER=662,
+    OBJ_FLOETE=663,
+    OBJ_WEIDENRUTE=664,
+    OBJ_HYPNOSEPENDEL=665,
+    OBJ_DORNROESCHENSPINDEL=666,
+    OBJ_KRISTALLKUGEL_OBJEKT=667,
+    OBJ_VOODOOPUPPE=668,
+    OBJ_SCHILD_SCHNEIDER=669,
+    OBJ_SCHNEIDEREI_ARBEITSRAUM=670,
+    OBJ_KLEIDERSCHRANK=671,
+    OBJ_SICHEL=672,
+    OBJ_SCHNITTMUSTERKATALOG=673,
+    OBJ_FINGERHUT=674,
+    OBJ_SITZECKE=675,
+    OBJ_ZUTATENREGAL=676,
+    OBJ_WALKTROMMEL=677,
+    OBJ_NADELKISSEN=678,
+    OBJ_UMKLEIDEKABINE=679,
+    OBJ_WEBSTUHL=680,
+    OBJ_NAEHMASCHINE=681,
+    OBJ_CATWALK=682,
+    OBJ_ANZIEHPUPPE=683,
+    OBJ_WEINREGAL_SCHNEIDER=684,
+    OBJ_SPIEGEL=685,
+    OBJ_WOLLE=686,
+    OBJ_FLACHS=687,
+    OBJ_PFLANZENFARBSTOFF=688,
+    OBJ_TUCH=689,
+    OBJ_WARME_SOCKEN=690,
+    OBJ_WOLLUMHANG=691,
+    OBJ_LEDERWAMS=692,
+    OBJ_WAFFENROCK=693,
+    OBJ_GOLDGEWIRKTE_SCHAERPE=694,
+    OBJ_ZAUBERHUT=695,
+    OBJ_TRAUMGIFT=696,
+    OBJ_WAFFENGIFT=697,
+    OBJ_TRUNK_DER_ARBEITSFREUDE=698,
+    OBJ_BRODEM_DER_VERGESSLICHKEIT=699,
+    OBJ_BRODEM_DER_BERSERKERWUT=700,
+    OBJ_BRODEM_DER_FAEULNIS=701,
+    OBJ_DUFT_DER_WILLFAEHRIGKEIT=702,
+    OBJ_DUFT_DER_BLINDEN_EIFERSUCHT=703,
+    OBJ_DUFT_DER_MANIPULATION=704,
+    OBJ_SCHLAFTRUNK=705,
+    OBJ_LAEHMUNGSGIFT=706,
+    OBJ_ANGSTGIFT=707,
+    OBJ_ANTIDOT=708,
+    OBJ_MAGISCHE_TINTE=709,
+    OBJ_TRUNK_DES_7_SINNS=710,
+    OBJ_HOLZSPLITTER_VOM_KREUZ_JESU=711,
+    OBJ_SIEBENMEILENSTIEFEL=712,
+    OBJ_RING_DER_NIBELUNGEN=713,
+    OBJ_SCHWURDOLCH_HERZOG_WIDUKINDS=714,
+    OBJ_SPEER_DES_HAGEN_VON_TRONJE=715,
+    OBJ_SIEGEL_DER_TEMPELHERREN=716,
+    OBJ_BUCH_DER_WEISHEITEN=717,
+    OBJ_EISENHANDSCHUH_DES_SHERIFFS=718,
+    OBJ_KRISTALLKUGEL_DER_HELLSICHT=719,
+    OBJ_KRIEGSBANNER_KARLS_DES_GROSSEN=720,
+    OBJ_DUELLPISTOLE_DES_HL_ZURRIO=721,
+    OBJ_AMULET_DER_INTUITION=722,
+    OBJ_CHARISMA_AMULET=723,
+    OBJ_BALMUNG_SIEGFRIEDS_SCHWERT=724,
+    OBJ_RECHENSCHIEBER_VON_JACOB_FUGGER=725,
+    OBJ_TARNKAPPE_DER_NIBELUNGEN=726,
+    OBJ_REISSBRETT_DES_LEONARDO_DA_VINCI=727,
+    OBJ_AMULET_DES_GLUECKS=728,
+    OBJ_ROBE_DES_LEONARDO_DA_VINCI=729,
+    OBJ_STERN_VON_BETHLEHEM=730,
+    OBJ_MARKTSTAND_OKKULT=731
+} OBJECT_PROTOTYPE_4;
+
+struct MaterialPriceInfo {
+    enum OBJECT_PROTOTYPE_4 object_prot_index;
+    undefined field1_0x4;
+    undefined field2_0x5;
+    undefined field3_0x6;
+    undefined field4_0x7;
+    undefined field5_0x8;
+    undefined field6_0x9;
+    undefined field7_0xa;
+    undefined field8_0xb;
+    undefined field9_0xc;
+    undefined field10_0xd;
+    undefined field11_0xe;
+    undefined field12_0xf;
+    undefined field13_0x10;
+    undefined field14_0x11;
+    undefined field15_0x12;
+    undefined field16_0x13;
+    undefined field17_0x14;
+    undefined field18_0x15;
+    undefined field19_0x16;
+    undefined field20_0x17;
+    undefined field21_0x18;
+    undefined field22_0x19;
+    undefined field23_0x1a;
+    undefined field24_0x1b;
+    undefined field25_0x1c;
+    undefined field26_0x1d;
+    undefined field27_0x1e;
+    undefined field28_0x1f;
+    undefined field29_0x20;
+    undefined field30_0x21;
+    undefined field31_0x22;
+    undefined field32_0x23;
+    undefined field33_0x24;
+    undefined field34_0x25;
+    undefined field35_0x26;
+    undefined field36_0x27;
+    undefined field37_0x28;
+    undefined field38_0x29;
+    undefined field39_0x2a;
+    undefined field40_0x2b;
+    undefined field41_0x2c;
+    undefined field42_0x2d;
+    undefined field43_0x2e;
+    undefined field44_0x2f;
+    float price; /* Multiplied by 32 */
+    undefined field46_0x34;
+    undefined field47_0x35;
+    undefined field48_0x36;
+    undefined field49_0x37;
+    undefined field50_0x38;
+    undefined field51_0x39;
+    undefined field52_0x3a;
+    undefined field53_0x3b;
+    undefined field54_0x3c;
+    undefined field55_0x3d;
+    undefined field56_0x3e;
+    undefined field57_0x3f;
+    undefined field58_0x40;
+    undefined field59_0x41;
+    undefined field60_0x42;
+    undefined field61_0x43;
+    undefined field62_0x44;
+    undefined field63_0x45;
+    undefined field64_0x46;
+    undefined field65_0x47;
+    undefined field66_0x48;
+    undefined field67_0x49;
+    undefined field68_0x4a;
+    undefined field69_0x4b;
+    undefined field70_0x4c;
+    undefined field71_0x4d;
+    undefined field72_0x4e;
+    undefined field73_0x4f;
+    undefined field74_0x50;
+    undefined field75_0x51;
+    undefined field76_0x52;
+    undefined field77_0x53;
+    byte some_flags;
+    undefined field79_0x55;
+    undefined field80_0x56;
+    undefined field81_0x57;
 };
 
 typedef struct ObjectPrototype_65 ObjectPrototype_65, *PObjectPrototype_65;
@@ -9642,8 +11270,8 @@ struct _iobuf {
 typedef struct ProductionInfo ProductionInfo, *PProductionInfo;
 
 struct ProductionInfo {
-    byte building_prot_index;
-    short object_prot_indices[10];
+    enum BUILDING_PROTOTYPE building_prot_index;
+    enum OBJECT_PROTOTYPE object_prot_indices[10];
 };
 
 typedef struct ProductionSetting ProductionSetting, *PProductionSetting;
@@ -9651,58 +11279,72 @@ typedef struct ProductionSetting ProductionSetting, *PProductionSetting;
 struct ProductionSetting {
     int building_id;
     int random_int;
-    undefined field2_0x8;
+    byte production_pair_index;
     undefined field3_0x9;
     undefined field4_0xa;
     undefined field5_0xb;
-    undefined field6_0xc;
-    undefined field7_0xd;
-    undefined field8_0xe;
-    undefined field9_0xf;
-    undefined field10_0x10;
-    undefined field11_0x11;
-    undefined field12_0x12;
-    undefined field13_0x13;
-    undefined field14_0x14;
-    undefined field15_0x15;
-    undefined field16_0x16;
-    undefined field17_0x17;
-    undefined field18_0x18;
-    undefined field19_0x19;
-    undefined field20_0x1a;
-    undefined field21_0x1b;
-    undefined field22_0x1c;
-    undefined field23_0x1d;
-    undefined field24_0x1e;
-    undefined field25_0x1f;
-    undefined field26_0x20;
-    undefined field27_0x21;
-    undefined field28_0x22;
-    undefined field29_0x23;
-    undefined field30_0x24;
-    undefined field31_0x25;
-    undefined field32_0x26;
-    undefined field33_0x27;
-    undefined field34_0x28;
-    undefined field35_0x29;
-    undefined field36_0x2a;
-    undefined field37_0x2b;
-    undefined field38_0x2c;
-    undefined field39_0x2d;
-    undefined field40_0x2e;
-    undefined field41_0x2f;
-    undefined field42_0x30;
-    undefined field43_0x31;
-    undefined field44_0x32;
-    undefined field45_0x33;
-    undefined field46_0x34;
-    undefined field47_0x35;
-    undefined field48_0x36;
-    undefined field49_0x37;
-    undefined field50_0x38;
-    undefined field51_0x39;
-    undefined field52_0x3a;
-    undefined field53_0x3b;
+    int production_pairs[14]; /* {obj_prot_index, production proportion} */
+    float price_level_for_selling; /* From 0.5 to 1.5 (50% -> 150%) */
+    struct ProductionSetting * next;
+};
+
+typedef struct ProductPriceInfo ProductPriceInfo, *PProductPriceInfo;
+
+struct ProductPriceInfo {
+    enum OBJECT_PROTOTYPE_4 object_prot_index;
+    undefined field1_0x4;
+    undefined field2_0x5;
+    undefined field3_0x6;
+    undefined field4_0x7;
+    undefined field5_0x8;
+    undefined field6_0x9;
+    undefined field7_0xa;
+    undefined field8_0xb;
+    undefined field9_0xc;
+    undefined field10_0xd;
+    undefined field11_0xe;
+    undefined field12_0xf;
+    undefined field13_0x10;
+    undefined field14_0x11;
+    undefined field15_0x12;
+    undefined field16_0x13;
+    undefined field17_0x14;
+    undefined field18_0x15;
+    undefined field19_0x16;
+    undefined field20_0x17;
+    undefined field21_0x18;
+    undefined field22_0x19;
+    undefined field23_0x1a;
+    undefined field24_0x1b;
+    undefined field25_0x1c;
+    undefined field26_0x1d;
+    undefined field27_0x1e;
+    undefined field28_0x1f;
+    undefined field29_0x20;
+    undefined field30_0x21;
+    undefined field31_0x22;
+    undefined field32_0x23;
+    undefined field33_0x24;
+    undefined field34_0x25;
+    undefined field35_0x26;
+    undefined field36_0x27;
+    undefined field37_0x28;
+    undefined field38_0x29;
+    undefined field39_0x2a;
+    undefined field40_0x2b;
+    undefined field41_0x2c;
+    undefined field42_0x2d;
+    undefined field43_0x2e;
+    undefined field44_0x2f;
+    undefined field45_0x30;
+    undefined field46_0x31;
+    undefined field47_0x32;
+    undefined field48_0x33;
+    undefined field49_0x34;
+    undefined field50_0x35;
+    undefined field51_0x36;
+    undefined field52_0x37;
+    float price; /* Multiplied by 32 */
     undefined field54_0x3c;
     undefined field55_0x3d;
     undefined field56_0x3e;
@@ -9711,8 +11353,123 @@ struct ProductionSetting {
     undefined field59_0x41;
     undefined field60_0x42;
     undefined field61_0x43;
-    float some_float;
-    struct ProductionSetting * next;
+    undefined field62_0x44;
+    undefined field63_0x45;
+    undefined field64_0x46;
+    undefined field65_0x47;
+    undefined field66_0x48;
+    undefined field67_0x49;
+    undefined field68_0x4a;
+    undefined field69_0x4b;
+    undefined field70_0x4c;
+    undefined field71_0x4d;
+    undefined field72_0x4e;
+    undefined field73_0x4f;
+    undefined field74_0x50;
+    undefined field75_0x51;
+    undefined field76_0x52;
+    undefined field77_0x53;
+    undefined field78_0x54;
+    undefined field79_0x55;
+    undefined field80_0x56;
+    undefined field81_0x57;
+    undefined field82_0x58;
+    undefined field83_0x59;
+    undefined field84_0x5a;
+    undefined field85_0x5b;
+    undefined field86_0x5c;
+    undefined field87_0x5d;
+    undefined field88_0x5e;
+    undefined field89_0x5f;
+    undefined field90_0x60;
+    undefined field91_0x61;
+    undefined field92_0x62;
+    undefined field93_0x63;
+    undefined field94_0x64;
+    undefined field95_0x65;
+    undefined field96_0x66;
+    undefined field97_0x67;
+    undefined field98_0x68;
+    undefined field99_0x69;
+    undefined field100_0x6a;
+    undefined field101_0x6b;
+    undefined field102_0x6c;
+    undefined field103_0x6d;
+    undefined field104_0x6e;
+    undefined field105_0x6f;
+    undefined field106_0x70;
+    undefined field107_0x71;
+    undefined field108_0x72;
+    undefined field109_0x73;
+    undefined field110_0x74;
+    undefined field111_0x75;
+    undefined field112_0x76;
+    undefined field113_0x77;
+    undefined field114_0x78;
+    undefined field115_0x79;
+    undefined field116_0x7a;
+    undefined field117_0x7b;
+    undefined field118_0x7c;
+    undefined field119_0x7d;
+    undefined field120_0x7e;
+    undefined field121_0x7f;
+};
+
+typedef struct RawMaterialInfo RawMaterialInfo, *PRawMaterialInfo;
+
+struct RawMaterialInfo {
+    enum OBJECT_PROTOTYPE_4 object_prot_index;
+    undefined field1_0x4;
+    undefined field2_0x5;
+    undefined field3_0x6;
+    undefined field4_0x7;
+    undefined field5_0x8;
+    undefined field6_0x9;
+    undefined field7_0xa;
+    undefined field8_0xb;
+    undefined field9_0xc;
+    undefined field10_0xd;
+    undefined field11_0xe;
+    undefined field12_0xf;
+    undefined field13_0x10;
+    undefined field14_0x11;
+    undefined field15_0x12;
+    undefined field16_0x13;
+    undefined field17_0x14;
+    undefined field18_0x15;
+    undefined field19_0x16;
+    undefined field20_0x17;
+    undefined field21_0x18;
+    undefined field22_0x19;
+    undefined field23_0x1a;
+    undefined field24_0x1b;
+    float price; /* Multiplied by 32 */
+    undefined field26_0x20;
+    undefined field27_0x21;
+    undefined field28_0x22;
+    undefined field29_0x23;
+    undefined field30_0x24;
+    undefined field31_0x25;
+    undefined field32_0x26;
+    undefined field33_0x27;
+    int count_1; /* Created by retype action */
+    undefined field35_0x2c;
+    undefined field36_0x2d;
+    undefined field37_0x2e;
+    undefined field38_0x2f;
+    undefined field39_0x30;
+    undefined field40_0x31;
+    undefined field41_0x32;
+    undefined field42_0x33;
+    undefined field43_0x34;
+    undefined field44_0x35;
+    undefined field45_0x36;
+    undefined field46_0x37;
+    int count_2; /* Created by retype action */
+    byte some_flags;
+    undefined field49_0x3d;
+    undefined field50_0x3e;
+    undefined field51_0x3f;
 };
 
 typedef struct SampleMaybe SampleMaybe, *PSampleMaybe;
@@ -13183,62 +14940,59 @@ struct Script {
     undefined field3141_0xc5d;
     undefined field3142_0xc5e;
     undefined field3143_0xc5f;
-    undefined field3144_0xc60;
-    undefined field3145_0xc61;
-    undefined field3146_0xc62;
-    undefined field3147_0xc63;
-    undefined field3148_0xc64;
-    undefined field3149_0xc65;
-    undefined field3150_0xc66;
-    undefined field3151_0xc67;
-    undefined field3152_0xc68;
-    undefined field3153_0xc69;
-    undefined field3154_0xc6a;
-    undefined field3155_0xc6b;
-    undefined field3156_0xc6c;
-    undefined field3157_0xc6d;
-    undefined field3158_0xc6e;
-    undefined field3159_0xc6f;
-    undefined field3160_0xc70;
-    undefined field3161_0xc71;
-    undefined field3162_0xc72;
-    undefined field3163_0xc73;
-    undefined field3164_0xc74;
-    undefined field3165_0xc75;
-    undefined field3166_0xc76;
-    undefined field3167_0xc77;
-    undefined field3168_0xc78;
-    undefined field3169_0xc79;
-    undefined field3170_0xc7a;
-    undefined field3171_0xc7b;
-    undefined field3172_0xc7c;
-    undefined field3173_0xc7d;
-    undefined field3174_0xc7e;
-    undefined field3175_0xc7f;
-    undefined field3176_0xc80;
-    undefined field3177_0xc81;
-    undefined field3178_0xc82;
-    undefined field3179_0xc83;
-    undefined field3180_0xc84;
-    undefined field3181_0xc85;
-    undefined field3182_0xc86;
-    undefined field3183_0xc87;
-    undefined field3184_0xc88;
-    undefined field3185_0xc89;
-    undefined field3186_0xc8a;
-    undefined field3187_0xc8b;
-    undefined field3188_0xc8c;
-    undefined field3189_0xc8d;
-    undefined field3190_0xc8e;
-    undefined field3191_0xc8f;
-    undefined field3192_0xc90;
-    undefined field3193_0xc91;
-    undefined field3194_0xc92;
-    undefined field3195_0xc93;
-    undefined field3196_0xc94;
-    undefined field3197_0xc95;
-    undefined field3198_0xc96;
-    undefined field3199_0xc97;
+    undefined * callback; /* Created by retype action */
+    undefined field3145_0xc64;
+    undefined field3146_0xc65;
+    undefined field3147_0xc66;
+    undefined field3148_0xc67;
+    undefined field3149_0xc68;
+    undefined field3150_0xc69;
+    undefined field3151_0xc6a;
+    undefined field3152_0xc6b;
+    undefined field3153_0xc6c;
+    undefined field3154_0xc6d;
+    undefined field3155_0xc6e;
+    undefined field3156_0xc6f;
+    undefined field3157_0xc70;
+    undefined field3158_0xc71;
+    undefined field3159_0xc72;
+    undefined field3160_0xc73;
+    undefined field3161_0xc74;
+    undefined field3162_0xc75;
+    undefined field3163_0xc76;
+    undefined field3164_0xc77;
+    undefined field3165_0xc78;
+    undefined field3166_0xc79;
+    undefined field3167_0xc7a;
+    undefined field3168_0xc7b;
+    undefined field3169_0xc7c;
+    undefined field3170_0xc7d;
+    undefined field3171_0xc7e;
+    undefined field3172_0xc7f;
+    undefined field3173_0xc80;
+    undefined field3174_0xc81;
+    undefined field3175_0xc82;
+    undefined field3176_0xc83;
+    undefined field3177_0xc84;
+    undefined field3178_0xc85;
+    undefined field3179_0xc86;
+    undefined field3180_0xc87;
+    undefined field3181_0xc88;
+    undefined field3182_0xc89;
+    undefined field3183_0xc8a;
+    undefined field3184_0xc8b;
+    undefined field3185_0xc8c;
+    undefined field3186_0xc8d;
+    undefined field3187_0xc8e;
+    undefined field3188_0xc8f;
+    undefined field3189_0xc90;
+    undefined field3190_0xc91;
+    undefined field3191_0xc92;
+    undefined field3192_0xc93;
+    undefined field3193_0xc94;
+    undefined field3194_0xc95;
+    undefined field3195_0xc96;
+    undefined field3196_0xc97;
 };
 
 typedef struct StructWithFile_100 StructWithFile_100, *PStructWithFile_100;
@@ -14319,5 +16073,167 @@ struct UnknownStruct_860 { /* There are 16 of them starting at 0x9b0e20 */
     undefined field857_0x359;
     undefined field858_0x35a;
     undefined field859_0x35b;
+};
+
+typedef struct UnknownStructure_172 UnknownStructure_172, *PUnknownStructure_172;
+
+struct UnknownStructure_172 {
+    undefined field0_0x0;
+    undefined field1_0x1;
+    undefined field2_0x2;
+    undefined field3_0x3;
+    undefined field4_0x4;
+    undefined field5_0x5;
+    undefined field6_0x6;
+    undefined field7_0x7;
+    undefined field8_0x8;
+    undefined field9_0x9;
+    undefined field10_0xa;
+    undefined field11_0xb;
+    undefined field12_0xc;
+    undefined field13_0xd;
+    undefined field14_0xe;
+    undefined field15_0xf;
+    undefined field16_0x10;
+    undefined field17_0x11;
+    undefined field18_0x12;
+    undefined field19_0x13;
+    undefined field20_0x14;
+    undefined field21_0x15;
+    undefined field22_0x16;
+    undefined field23_0x17;
+    undefined field24_0x18;
+    undefined field25_0x19;
+    undefined field26_0x1a;
+    undefined field27_0x1b;
+    undefined field28_0x1c;
+    undefined field29_0x1d;
+    undefined field30_0x1e;
+    undefined field31_0x1f;
+    undefined field32_0x20;
+    undefined field33_0x21;
+    undefined field34_0x22;
+    undefined field35_0x23;
+    undefined field36_0x24;
+    undefined field37_0x25;
+    undefined field38_0x26;
+    undefined field39_0x27;
+    undefined field40_0x28;
+    undefined field41_0x29;
+    undefined field42_0x2a;
+    undefined field43_0x2b;
+    undefined field44_0x2c;
+    undefined field45_0x2d;
+    undefined field46_0x2e;
+    undefined field47_0x2f;
+    undefined field48_0x30;
+    undefined field49_0x31;
+    undefined field50_0x32;
+    undefined field51_0x33;
+    undefined field52_0x34;
+    undefined field53_0x35;
+    undefined field54_0x36;
+    undefined field55_0x37;
+    undefined field56_0x38;
+    undefined field57_0x39;
+    undefined field58_0x3a;
+    undefined field59_0x3b;
+    undefined field60_0x3c;
+    undefined field61_0x3d;
+    undefined field62_0x3e;
+    undefined field63_0x3f;
+    undefined field64_0x40;
+    undefined field65_0x41;
+    undefined field66_0x42;
+    undefined field67_0x43;
+    undefined field68_0x44;
+    undefined field69_0x45;
+    undefined field70_0x46;
+    undefined field71_0x47;
+    undefined field72_0x48;
+    undefined field73_0x49;
+    undefined field74_0x4a;
+    undefined field75_0x4b;
+    undefined field76_0x4c;
+    undefined field77_0x4d;
+    undefined field78_0x4e;
+    undefined field79_0x4f;
+    undefined field80_0x50;
+    undefined field81_0x51;
+    undefined field82_0x52;
+    undefined field83_0x53;
+    undefined field84_0x54;
+    undefined field85_0x55;
+    undefined field86_0x56;
+    undefined field87_0x57;
+    undefined field88_0x58;
+    undefined field89_0x59;
+    undefined field90_0x5a;
+    undefined field91_0x5b;
+    undefined field92_0x5c;
+    undefined field93_0x5d;
+    undefined field94_0x5e;
+    undefined field95_0x5f;
+    undefined field96_0x60;
+    undefined field97_0x61;
+    undefined field98_0x62;
+    undefined field99_0x63;
+    undefined field100_0x64;
+    undefined field101_0x65;
+    undefined field102_0x66;
+    undefined field103_0x67;
+    undefined field104_0x68;
+    undefined field105_0x69;
+    undefined field106_0x6a;
+    undefined field107_0x6b;
+    undefined field108_0x6c;
+    undefined field109_0x6d;
+    undefined field110_0x6e;
+    undefined field111_0x6f;
+    undefined field112_0x70;
+    undefined field113_0x71;
+    undefined field114_0x72;
+    undefined field115_0x73;
+    byte some_bytes[16]; /* Maybe an enum from Character* */
+    undefined field117_0x84;
+    undefined field118_0x85;
+    undefined field119_0x86;
+    undefined field120_0x87;
+    undefined field121_0x88;
+    undefined field122_0x89;
+    undefined field123_0x8a;
+    undefined field124_0x8b;
+    undefined field125_0x8c;
+    undefined field126_0x8d;
+    undefined field127_0x8e;
+    undefined field128_0x8f;
+    undefined field129_0x90;
+    undefined field130_0x91;
+    undefined field131_0x92;
+    undefined field132_0x93;
+    undefined field133_0x94;
+    undefined field134_0x95;
+    undefined field135_0x96;
+    undefined field136_0x97;
+    undefined field137_0x98;
+    undefined field138_0x99;
+    undefined field139_0x9a;
+    undefined field140_0x9b;
+    undefined field141_0x9c;
+    undefined field142_0x9d;
+    undefined field143_0x9e;
+    undefined field144_0x9f;
+    undefined field145_0xa0;
+    undefined field146_0xa1;
+    undefined field147_0xa2;
+    undefined field148_0xa3;
+    undefined field149_0xa4;
+    undefined field150_0xa5;
+    undefined field151_0xa6;
+    undefined field152_0xa7;
+    undefined field153_0xa8;
+    undefined field154_0xa9;
+    undefined field155_0xaa;
+    undefined field156_0xab;
 };
 
