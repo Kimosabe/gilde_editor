@@ -138,13 +138,13 @@ struct pair_hash {
 };
 
 namespace ImGui {
-bool InputUShort(const char* label, unsigned short* v, unsigned short step = 1, unsigned short step_fast = 100, ImGuiInputTextFlags flags = 0)
+bool InputUShort(const char* label, void* v, unsigned short step = 1, unsigned short step_fast = 100, ImGuiInputTextFlags flags = 0)
 {
     // Hexadecimal input provided as a convenience but the flag name is awkward. Typically you'd use InputText() to parse your own data, if you want to handle prefixes.
     const char* format = (flags & ImGuiInputTextFlags_CharsHexadecimal) ? "%04X" : "%d";
     return InputScalar(label, ImGuiDataType_U16, (void*)v, (void*)(step > 0 ? &step : NULL), (void*)(step_fast > 0 ? &step_fast : NULL), format, flags);
 }
-bool InputShort(const char* label, short* v, short step = 1, short step_fast = 100, ImGuiInputTextFlags flags = 0)
+bool InputShort(const char* label, void* v, short step = 1, short step_fast = 100, ImGuiInputTextFlags flags = 0)
 {
     // Hexadecimal input provided as a convenience but the flag name is awkward. Typically you'd use InputText() to parse your own data, if you want to handle prefixes.
     const char* format = (flags & ImGuiInputTextFlags_CharsHexadecimal) ? "%04X" : "%d";
@@ -431,9 +431,16 @@ struct ViewCharacter : public ViewBase {
 
     ViewCharacter(NodesViewer *viewer, Character* d) : ViewBase(viewer, d, sizeof(*d)) {
         ID_CONNECTION(&d->object_id, "Self");
-        ID_CONNECTION(&d->character_id_birth_related, "Some character");
+        ID_CONNECTION(d->children_maybe + 0, "Child #1");
+        ID_CONNECTION(d->children_maybe + 1, "Child #2");
+        ID_CONNECTION(d->children_maybe + 2, "Child #3");
+        ID_CONNECTION(d->children_maybe + 3, "Child #4");
+        ID_CONNECTION(d->children_maybe + 4, "Child #5");
+        ID_CONNECTION(d->children_maybe + 5, "Child #6");
+        ID_CONNECTION(d->children_maybe + 6, "Child #7");
+        ID_CONNECTION(d->children_maybe + 7, "Child #8");
         LINKED_LIST_CONNECTION(&d->inventory, "Inventory");
-        BUILDING_INSTANCE_CONNECTION(&d->maybe_home, "Home");
+        BUILDING_INSTANCE_CONNECTION(&d->home, "Home");
     }
     int Id() { return ((Character *)this->data)->object_id; }
     void DrawNode(NodesViewer *viewer);
@@ -773,21 +780,21 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
 
         if (prototype->type == 36) {
             ImGui::Text("Action active: %i", (int)node->action_in_progress_flag);
-            ImGui::Text("Character ID for action: %i", node->character_id_for_action);
+            ImGui::Text("Character ID for action: %i", node->any.time.character_id_for_action);
         }
 
         ImGui::Text("Object ID: %i", node->this_object_id);
         ImGui::Text("Container ID: %i", node->container_object_id);
         ImGui::Text("Owner ID: %i", node->owner_object_id);
         ImGui::Text("Magick byte: %i", (int)node->magick_byte);
-        //ImGui::Text("Time: (%i, %i)", (int)node->time_1, (int)node->time_2);
+        //ImGui::Text("Time: (%i, %i)", (int)node->any.time.time_1, (int)node->any.time.time_2);
         if (node->object_prot_index == 42) {
-            ImGui::SliderByte("Raw material cells", &node->time_1, 1, 8);
-            ImGui::SliderByte("Production cells", &node->time_2, 1, 8);
+            ImGui::SliderByte("Raw material cells", &node->any.time.time_1, 1, 8);
+            ImGui::SliderByte("Production cells", &node->any.time.time_2, 1, 8);
         } else {
-            ImGui::InputUShort("Time as 2 bytes)", (unsigned short *)&node->time_1, 1);
-            ImGui::InputByte("Time byte #1", &node->time_1, 1);
-            ImGui::InputByte("Time byte #2", &node->time_2, 1);
+            ImGui::InputUShort("Time as 2 bytes)", (unsigned short *)&node->any.time.time_1, 1);
+            ImGui::InputByte("Time byte #1", &node->any.time.time_1, 1);
+            ImGui::InputByte("Time byte #2", &node->any.time.time_2, 1);
         }
     }
 
@@ -844,7 +851,6 @@ void ViewCharacter::DrawNode(NodesViewer *viewer) {
         ImGui::Text("Index: %i", character->index);
         ImGui::SliderInt("Action Points", &character->action_points, 1, 50);
         ImGui::Text("Object ID: %i", character->object_id);
-        ImGui::Text("Another character ID: %i", character->character_id_birth_related);
         if (character->playermode == 1) {
             ImGui::Text("Master budget: %i", character->master_budget / 32);
         }
@@ -867,7 +873,7 @@ void ViewCharacter::DrawNode(NodesViewer *viewer) {
 
 ViewBuildingInstance::ViewBuildingInstance(NodesViewer *viewer, BuildingInstance* d) : ViewBase(viewer, d, sizeof(*d))
 {
-    MEMORY_EDIT_CONNECTION(&d->ahm_info, sizeof(AhmInfo), "Ahm Info");
+    //MEMORY_EDIT_CONNECTION(&d->additional_ptr_of_different_size, sizeof(???), "???"); // no idea how to tell which pointer it is
     LINKED_LIST_CONNECTION(&d->building_content, "Content");
     CHARACTER_INDEX_CONNECTION(&d->character_index_1, "Character #1");
     CHARACTER_INDEX_CONNECTION(&d->character_index_2, "Character #2");

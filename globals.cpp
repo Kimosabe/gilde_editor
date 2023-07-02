@@ -80,5 +80,13 @@ void InitGlobals() {
 
     static_assert(sizeof(Character_580) == 580);
     static_assert(sizeof(ObjectPrototype_65) == 65);
+    static_assert(sizeof(LinkedList) == 0x43);
+    static_assert(sizeof(BuildingInstance) == 0xa9);
+    static_assert(sizeof(Character) == 0x21c);
+    static_assert(sizeof(ProductionSetting) == 0x4c);
+    static_assert(sizeof(ProductionInfo) == 0x15);
+    static_assert(sizeof(CutScene) == 0x114);
+    static_assert(sizeof(Handlung) == 0x14c);
+    static_assert(sizeof(SomethingAboutBuilding) == 0x228);
 }
 

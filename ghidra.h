@@ -10063,6 +10063,7 @@ struct CutScene {
 
 typedef struct MaterialPriceInfo MaterialPriceInfo, *PMaterialPriceInfo;
 
+namespace OP4 {
 typedef enum OBJECT_PROTOTYPE_4:long {
     OBJ_NULL=0,
     OBJ_KANALISATION=1,
@@ -10797,6 +10798,7 @@ typedef enum OBJECT_PROTOTYPE_4:long {
     OBJ_STERN_VON_BETHLEHEM=730,
     OBJ_MARKTSTAND_OKKULT=731
 } OBJECT_PROTOTYPE_4;
+};
 
 struct MaterialPriceInfo {
     enum OBJECT_PROTOTYPE_4 object_prot_index;
