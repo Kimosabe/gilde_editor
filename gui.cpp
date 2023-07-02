@@ -338,6 +338,7 @@ struct ViewInit : ViewBase {
         CHARACTER_INDEX_CONNECTION(&current_player_index, "Current Player");
         CHARACTER_580_CONNECTION(g_char_580_1, "g_char_580_1");
         CHARACTER_580_CONNECTION(g_char_580_2, "g_char_580_2");
+        SAB_CONNECTION(g_camera, "Camera");
         PRODUCTION_INFO_CONNECTION(&production_prot_index, "Production info");
     }
 
@@ -373,8 +374,10 @@ struct ViewProductionInfo : ViewBase {
             char buffer[64];
             ImGui::Text("Production Info (%i)", (int)ptr->building_prot_index);
             for (int i = 0; i < 10; ++i) {
-                snprintf(buffer, 64, "[%i] %s", i, (*g_objects_prototypes)[ptr->object_prot_indices[i]].name);
+                snprintf(buffer, 64, "[%i]", i);
                 ImGui::InputShort(buffer, ptr->object_prot_indices + i);
+                ImGui::SameLine();
+                ImGui::Text((*g_objects_prototypes)[ptr->object_prot_indices[i]].name);
             }
         }
     };

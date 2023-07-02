@@ -19,6 +19,7 @@ enum GLOBALS {
     WIN_MESSAGE_LOOOP_ADDR,
     CALL_TO_WIN_MESSAGE_LOOP_INSIDE_MASTER,
     FIND_FREE_LINKED_LIST_NODE,
+    REMOVE_LINKED_LIST_FROM_CHAIN,
     GET_PRODUCTION_INFO,
     FIND_BY_OBJECT_ID,
     G_OBJECTS_COUNT,
@@ -32,6 +33,7 @@ enum GLOBALS {
     G_CHAR_580_2,
     G_BAD_SAB_POINTERS_START,
     G_BAD_SAB_POINTERS_END,
+    G_CAMERA,
 
     GLOBALS_SIZE // Must be the last
 };
@@ -67,6 +69,7 @@ extern BuildingInstance** g_current_building_ptr_2;
 extern LinkedList** g_current_room_ptr;
 extern Character_580* g_char_580_1;
 extern Character_580* g_char_580_2;
+extern SomethingAboutBuilding* g_camera;
 
 
 //----------------------------------------------------------------------------

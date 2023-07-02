@@ -7,6 +7,7 @@ size_t g_globals[GLOBALS_SIZE][LANG_SIZE] = {
     /*[WIN_MESSAGE_LOOOP_ADDR] = */                 { 0x005356E0, 0x0051df40 },
     /*[CALL_TO_WIN_MESSAGE_LOOP_INSIDE_MASTER] = */ { 0x005373f7, 0x0051ed77 },
     /*[FIND_FREE_LINKED_LIST_NODE] = */             { 0x00502e00, 0x004ee190 },
+    /*[REMOVE_LINKED_LIST_FROM_CHAIN] = */          { 0x00502e30, 0x004ee1c0 },
     /*[GET_PRODUCTION_INFO] = */                    { 0x005b1aa0, 0x005964a0 },
     /*[FIND_BY_OBJECT_ID] = */                      { 0x005015e0, 0x004ecc20 },
     /*[G_OBJECTS_COUNT] = */                        { 0x00699364, 0x006438e4 },
@@ -20,6 +21,7 @@ size_t g_globals[GLOBALS_SIZE][LANG_SIZE] = {
     /*[G_CHAR_580_2] = */                           { 0x01551f40, 0x014f6e60 },
     /*[G_BAD_SAB_POINTERS_START] = */               { 0x01040640, 0x00fe5a80 },
     /*[G_BAD_SAB_POINTERS_END] = */                 { 0x0067a370, 0x00624f50 },
+    /*[G_CAMERA] = */                               { 0x006b8014, 0x00661334 },
 };
 
 LANG g_lang;
@@ -30,6 +32,9 @@ LANG g_lang;
 
 typedef LinkedList *(*__FindFreeLinkedListNode)();
 __FindFreeLinkedListNode FindFreeLinkedListNode;
+// Returns 0 on success
+typedef int (*FN_RemoveLinkedListFromChain_00502e30)(LinkedList**, OBJECT_PROTOTYPE_4);
+FN_RemoveLinkedListFromChain_00502e30 RemoveLinkedListFromChain;
 
 typedef ProductionInfo *(*FN_get_production_info_005b1aa0)(BuildingInstance *);
 FN_get_production_info_005b1aa0 GetProductionInfo;
@@ -51,6 +56,7 @@ BuildingInstance** g_current_building_ptr_2;
 LinkedList** g_current_room_ptr;
 Character_580* g_char_580_1;
 Character_580* g_char_580_2;
+SomethingAboutBuilding* g_camera;
 
 
 //----------------------------------------------------------------------------
@@ -65,6 +71,7 @@ void InitGlobals() {
     }
 
     FindFreeLinkedListNode = (__FindFreeLinkedListNode)_G(FIND_FREE_LINKED_LIST_NODE);
+    RemoveLinkedListFromChain = (FN_RemoveLinkedListFromChain_00502e30)_G(REMOVE_LINKED_LIST_FROM_CHAIN);
     GetProductionInfo = (FN_get_production_info_005b1aa0)_G(GET_PRODUCTION_INFO);
     FindById = (FN_find_by_object_id_005015e0)_G(FIND_BY_OBJECT_ID);
 
@@ -77,6 +84,7 @@ void InitGlobals() {
     g_current_room_ptr = (LinkedList**)_G(G_CURRENT_ROOM_PTR);
     g_char_580_1 = (Character_580*)_G(G_CHAR_580_1);
     g_char_580_2 = (Character_580*)_G(G_CHAR_580_2);
+    g_camera = (SomethingAboutBuilding*)_G(G_CAMERA);
 
     static_assert(sizeof(Character_580) == 580);
     static_assert(sizeof(ObjectPrototype_65) == 65);
