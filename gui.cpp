@@ -185,6 +185,7 @@ struct ViewSomethingAboutBuilding;
 struct ViewCharacter580;
 struct ViewMemoryEdit;
 struct ViewProductionInfo;
+struct ViewHandlung;
 struct ConnectionV2;
 
 struct NodesViewer {
@@ -251,6 +252,7 @@ ViewBase *CreateIDView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateMemoryEditView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateCharacter580View(ConnectionV2*, NodesViewer* viewer, void* ptr);
 ViewBase *CreateProductionInfoView(ConnectionV2*, NodesViewer* viewer, void* ptr);
+ViewBase *CreateHandlungView(ConnectionV2*, NodesViewer* viewer, void* ptr);
 
 
 struct ViewBase {
@@ -303,23 +305,25 @@ struct ViewBase {
 };
 
 #define CHARACTER_INDEX_CONNECTION(index, name) \
-connections_v2.push_back({ {(int)(index), (int)(g_characters), (int)(g_characters + 768)}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetCharacterID, GetCharacterPtrByIndex, CreateCharacterView });
+connections_v2.push_back({ {(int)(index), (int)(g_characters), (int)(g_characters + 768)}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, GetCharacterID, GetCharacterPtrByIndex, CreateCharacterView });
 #define CHARACTER_CONNECTION(ptr, name) \
-connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetCharacterID, GetCharacterPtr, CreateCharacterView });
+connections_v2.push_back({ {(int)(ptr), 0, 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, GetCharacterID, GetCharacterPtr, CreateCharacterView });
 #define BUILDING_INSTANCE_CONNECTION(ptr, name) \
-connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetBuildingInstanceID, GetBuildingInstancePtr, CreateBuildingInstanceView });
+connections_v2.push_back({ {(int)(ptr), 0, 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, GetBuildingInstanceID, GetBuildingInstancePtr, CreateBuildingInstanceView });
 #define LINKED_LIST_CONNECTION(ptr, name) \
-connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetLinkedListID, GetLinkedListPtr, CreateLinkedListView });
+connections_v2.push_back({ {(int)(ptr), 0, 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, GetLinkedListID, GetLinkedListPtr, CreateLinkedListView });
 #define SAB_CONNECTION(ptr, name) \
-connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetSomethingAboutBuildingPtr, CreateSomethingAboutBuildingView });
+connections_v2.push_back({ {(int)(ptr), 0, 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, PtrAsID, GetSomethingAboutBuildingPtr, CreateSomethingAboutBuildingView });
 #define ID_CONNECTION(id, name) \
-connections_v2.push_back({ {(int)id, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, GetIDByID, GetIDPtr, CreateIDView });
+connections_v2.push_back({ {(int)(id), 0, 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, GetIDByID, GetIDPtr, CreateIDView });
 #define MEMORY_EDIT_CONNECTION(ptr, size, name) \
-connections_v2.push_back({ {(int)ptr, (int)size, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetRawPtr, CreateMemoryEditView });
+connections_v2.push_back({ {(int)(ptr), (int)(size), 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, PtrAsID, GetRawPtr, CreateMemoryEditView });
 #define CHARACTER_580_CONNECTION(ptr, name) \
-connections_v2.push_back({ {(int)ptr, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetRawPtr, CreateCharacter580View });
+connections_v2.push_back({ {(int)(ptr), 0, 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, PtrAsID, GetRawPtr, CreateCharacter580View });
 #define PRODUCTION_INFO_CONNECTION(prot_index, name) \
-connections_v2.push_back({ {(int)prot_index, 0, 0}, viewer->widget_id--, viewer->widget_id--, name, nullptr, false, PtrAsID, GetProductionByPrototypePtr, CreateProductionInfoView });
+connections_v2.push_back({ {(int)(prot_index), 0, 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, PtrAsID, GetProductionByPrototypePtr, CreateProductionInfoView });
+#define HANDLUNG_CONNECTION(ptr, name) \
+connections_v2.push_back({ {(int)(ptr), 0, 0}, viewer->widget_id--, viewer->widget_id--, (name), nullptr, false, PtrAsID, GetRawPtr, CreateHandlungView });
 
 
 
@@ -383,6 +387,28 @@ struct ViewProductionInfo : ViewBase {
     };
 };
 
+struct ViewHandlung : ViewBase {
+    ViewHandlung(NodesViewer *viewer, Handlung* d) : ViewBase(viewer, d, sizeof(*d)) {
+        CHARACTER_INDEX_CONNECTION(&d->charater_index, "Character");
+        ID_CONNECTION(&d->building_id, "Building?");
+        ID_CONNECTION(&d->some_object_id, "Object #1");
+        ID_CONNECTION(&d->object_id, "Object #2");
+    }
+    int Id() { return (int)data; }
+    void DrawNode(NodesViewer *viewer) {
+        Handlung *ptr = (Handlung *)data;
+        if (show_mem_edit) {
+            mem_edit.DrawContents(data, data_size);
+        } else {
+            ImGui::Text("Handlung (id?: %i)", (int)ptr->maybe_id);
+            ImGui::Text("field4_0x4 = %i", ptr->field4_0x4);
+            ImGui::InputFloat("Float #1", &ptr->float_again);
+            ImGui::InputFloat("Float #2", &ptr->another_float);
+            ImGui::InputFloat("Float #3", &ptr->some_float);
+        }
+    };
+};
+
 struct ViewCharacter580 : ViewBase {
     ViewCharacter580(NodesViewer *viewer, Character_580* d) : ViewBase(viewer, d, sizeof(*d)) {
         SAB_CONNECTION(&d->ptr_0, "SAB #0");
@@ -434,16 +460,18 @@ struct ViewCharacter : public ViewBase {
 
     ViewCharacter(NodesViewer *viewer, Character* d) : ViewBase(viewer, d, sizeof(*d)) {
         ID_CONNECTION(&d->object_id, "Self");
-        ID_CONNECTION(d->children_maybe + 0, "Child #1");
-        ID_CONNECTION(d->children_maybe + 1, "Child #2");
-        ID_CONNECTION(d->children_maybe + 2, "Child #3");
-        ID_CONNECTION(d->children_maybe + 3, "Child #4");
-        ID_CONNECTION(d->children_maybe + 4, "Child #5");
-        ID_CONNECTION(d->children_maybe + 5, "Child #6");
-        ID_CONNECTION(d->children_maybe + 6, "Child #7");
-        ID_CONNECTION(d->children_maybe + 7, "Child #8");
+        ID_CONNECTION(d->children_maybe + 0, "Husband or Wife");
+        ID_CONNECTION(d->children_maybe + 1, "Father");
+        ID_CONNECTION(d->children_maybe + 2, "Mother");
+        ID_CONNECTION(d->children_maybe + 3, "Child #1");
+        ID_CONNECTION(d->children_maybe + 4, "Child #2");
+        ID_CONNECTION(d->children_maybe + 5, "Child #3");
+        ID_CONNECTION(d->children_maybe + 6, "Child #4");
+        ID_CONNECTION(d->children_maybe + 7, "Child #5");
         LINKED_LIST_CONNECTION(&d->inventory, "Inventory");
+        HANDLUNG_CONNECTION(&d->action_ptr, "Handlung");
         BUILDING_INSTANCE_CONNECTION(&d->home, "Home");
+        BUILDING_INSTANCE_CONNECTION(&d->master_building, "Master Building");
     }
     int Id() { return ((Character *)this->data)->object_id; }
     void DrawNode(NodesViewer *viewer);
@@ -703,6 +731,9 @@ ViewBase* CreateCharacter580View(ConnectionV2*, NodesViewer* viewer, void* ptr) 
 ViewBase* CreateProductionInfoView(ConnectionV2*, NodesViewer* viewer, void* ptr) {
     return new ViewProductionInfo(viewer, (ProductionInfo*)ptr);
 }
+ViewBase* CreateHandlungView(ConnectionV2*, NodesViewer* viewer, void* ptr) {
+    return new ViewHandlung(viewer, (Handlung*)ptr);
+}
 
 void ViewLinkedList::DrawNode(NodesViewer *viewer) {
     LinkedList *node = (LinkedList *)this->data;
@@ -769,6 +800,8 @@ void ViewLinkedList::DrawNode(NodesViewer *viewer) {
         ImGui::InputUShort("Prototype index", &node->object_prot_index, 1);
         if (prototype->type == 9) {
             ImGui::InputInt("Count", &node->count, 32);
+            ImGui::SameLine();
+            ImGui::Text("(%i)", node->count / 32);
         } else if (is_item) {
             if (node->container_object_id == node->owner_object_id) {
                 ImGui::SliderInt("Count", &node->count, 1, 3);
@@ -914,6 +947,7 @@ void ViewBuildingInstance::DrawNode(NodesViewer *viewer) {
         */
 
         ImGui::Text("Characters: [%i, %i]", node->character_index_1, node->character_index_2);
+        ImGui::Text("script_id_or_index = %i", node->script_id_or_index);
     }
 }
 
